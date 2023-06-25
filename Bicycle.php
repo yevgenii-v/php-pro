@@ -2,11 +2,14 @@
 
 class Bicycle extends Transport
 {
-    protected int $numGears;
-    public function __construct(string $name, int $speed, int $numGears)
+    public function __construct
+    (
+        protected string $name,
+        protected int $speed,
+        protected int $numGears
+    )
     {
         parent::__construct($name, $speed);
-        $this->numGears = $numGears;
     }
 
     /**

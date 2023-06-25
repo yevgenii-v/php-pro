@@ -2,22 +2,15 @@
 
 class Transport
 {
-    protected string $name;
-    protected int $speed;
-
     /**
      * @param string $name
      * @param int $speed
      */
     public function __construct
     (
-        string $name = 'Transport',
-        int $speed = 0,
-    )
-    {
-        $this->name = $name;
-        $this->speed = $speed;
-    }
+        protected string $name = 'Transport',
+        protected int $speed = 0,
+    ){}
 
     /**
      * @return string

@@ -1,17 +1,20 @@
 <?php
 class Boat extends Transport
 {
-    protected int $passengers;
-
     /**
      * @param string $name
      * @param int $speed
      * @param int $passengers
      */
-    public function __construct(string $name = 'Transport', int $speed = 0, int $passengers = 0)
+    public function __construct
+    (
+        protected string $name,
+        protected int $speed,
+        protected int $passengers,
+
+    )
     {
         parent::__construct($name, $speed);
-        $this->passengers = $passengers;
     }
 
     /**

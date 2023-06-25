@@ -2,12 +2,14 @@
 
 class Car extends Transport
 {
-    protected int $numDoors;
-
-    public function __construct(string $name, int $speed, int $numDoors)
+    public function __construct
+    (
+        protected string $name,
+        protected int $speed,
+        protected int $numDoors
+    )
     {
         parent::__construct($name, $speed);
-        $this->numDoors = $numDoors;
     }
 
     /**
