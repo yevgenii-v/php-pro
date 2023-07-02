@@ -48,7 +48,7 @@ class UserService
     ) {
     }
 
-    public function registerUser($userData): void
+    public function registerUser(array $userData): void
     {
         // Реєстрація користувача в базі даних
         $this->db->insert('users', $userData);
