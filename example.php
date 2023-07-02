@@ -1,6 +1,11 @@
 <?php
 
-class Database
+interface DatabaseInterface
+{
+    public function insert(string $table, array $data);
+}
+
+class Database implements DatabaseInterface
 {
     public function insert(string $table, array $data)
     {
@@ -8,7 +13,12 @@ class Database
     }
 }
 
-class EmailService
+interface EmailServiceInterface
+{
+    public function sendWelcomeEmail(string $email);
+}
+
+class EmailService implements EmailServiceInterface
 {
     public function sendWelcomeEmail(string $email)
     {
@@ -16,7 +26,12 @@ class EmailService
     }
 }
 
-class SMSService
+interface SMSServiceInterface
+{
+    public function sendSMS(string $phone, string $message);
+}
+
+class SMSService implements SMSServiceInterface
 {
     public function sendSMS(string $phone, string $message)
     {
@@ -27,9 +42,9 @@ class SMSService
 class UserService
 {
     public function __construct(
-        protected Database $db,
-        protected EmailService $mailer,
-        protected SMSService $smsService,
+        protected DatabaseInterface $db,
+        protected EmailServiceInterface $mailer,
+        protected SMSServiceInterface $smsService,
     ) {
     }
 
