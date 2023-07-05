@@ -4,8 +4,12 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 
-class UserCreate extends Command
+class CreateUser extends Command
 {
+    protected string|array $option;
+    protected string $path;
+    protected string $filename;
+
     /**
      * The name and signature of the console command.
      *
@@ -26,25 +30,25 @@ class UserCreate extends Command
     public function handle(): void
     {
         $json = [];
-        $path = 'json/users/';
-        $filename = $this->argument('name') . '.json';
+        $this->path = 'json/users/';
+        $this->filename = $this->argument('name') . '.json';
 
         $userAge = $this->ask('How old are you?');
 
-        if ($userAge < 18 && !$this->confirm('Do you wish to continue?')) {
+        if ($this->isLegalAge($userAge)) {
             $this->error('Operation aborted.');
             return;
         }
 
-        $option = $this->choice('Choose next options:', ['read', 'write']);
+        $this->option = $this->choice('Choose next options:', ['read', 'write']);
 
-        if ($option === 'read' && file_exists(public_path($path . $filename))) {
-            $file = file_get_contents(public_path($path . $filename));
+        if ($this->optionRead()) {
+            $file = file_get_contents(public_path($this->path . $this->filename));
             $this->info($file);
             return;
         }
 
-        if ($option === 'write') {
+        if ($this->option === 'write') {
             $json['name'] = $this->argument('name');
             $json['age'] = $userAge;
 
@@ -52,11 +56,21 @@ class UserCreate extends Command
             $json['city']       = $this->ask('Type a name of your city?');
             $json['phone']      = $this->ask('What is your phone number?');
 
-            file_put_contents(public_path($path . $json['name'] . '.json'), json_encode($json));
+            file_put_contents(public_path($this->path . $this->filename), json_encode($json));
             $this->info('User has been created.');
             return;
         }
 
         $this->alert('Something went wrong.');
+    }
+
+    private function isLegalAge(int $userAge): bool
+    {
+        return $userAge < 18 && $this->confirm('Do you wish to continue?') === false;
+    }
+
+    private function optionRead(): bool
+    {
+        return $this->option === 'read' && file_exists(public_path($this->path . $this->filename)) === true;
     }
 }
