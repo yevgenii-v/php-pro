@@ -15,25 +15,12 @@ class BookResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        $resource = [];
-
-
-        if ($this->routeList()) {
-            $resource = [
-                'id' => $this->resource->id
-            ];
-        }
-
-        return $resource + [
+        return [
+            'id'            => $this->resource->id,
             'name'          => $this->resource->name,
             'author'        => $this->resource->author,
             'year'          => $this->resource->year,
             'countPages'    => $this->resource->countPages,
         ];
-    }
-
-    private function routeList(): bool
-    {
-        return request()->routeIs('books.index', 'books.show', 'books.update', 'books.destroy');
     }
 }

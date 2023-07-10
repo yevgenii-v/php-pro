@@ -4,9 +4,8 @@ namespace App\Http\Requests\Book;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Routing\Route;
 
-class BookRequest extends FormRequest
+class BookUpdateRequest extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -15,15 +14,8 @@ class BookRequest extends FormRequest
      */
     public function rules(): array
     {
-        $rules = [];
-
-        if ($this->routeList()) {
-            $rules = [
-                'id' => ['numeric']
-            ];
-        }
-
-        return $rules + [
+        return [
+            'id'            => ['numeric'],
             'name'          => ['string'],
             'author'        => ['string'],
             'year'          => ['numeric'],
@@ -31,15 +23,10 @@ class BookRequest extends FormRequest
         ];
     }
 
-    public function prepareForValidation(): void
+    protected function prepareForValidation(): void
     {
         $this->merge([
             'id' => $this->route('book')
         ]);
-    }
-
-    private function routeList(): bool
-    {
-        return $this->routeIs('books.index', 'books.show', 'books.update', 'books.destroy');
     }
 }

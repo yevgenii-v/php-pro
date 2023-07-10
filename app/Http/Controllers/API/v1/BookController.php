@@ -3,7 +3,10 @@
 namespace App\Http\Controllers\API\v1;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Book\BookRequest;
+use App\Http\Requests\Book\BookDestroyRequest;
+use App\Http\Requests\Book\BookShowRequest;
+use App\Http\Requests\Book\BookStoreRequest;
+use App\Http\Requests\Book\BookUpdateRequest;
 use App\Http\Resources\BookResource;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Illuminate\Foundation\Application;
@@ -39,27 +42,36 @@ class BookController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(BookRequest $request): BookResource
+    public function store(BookStoreRequest $request): BookResource
     {
         $validatedData = $request->validated();
+        $data = ['id' => 1] + $validatedData;
 
-        return BookResource::make((object)$validatedData);
+        return BookResource::make((object)$data);
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(BookRequest $request, string $id): BookResource
+    public function show(BookShowRequest $request, string $id): AnonymousResourceCollection
     {
         $validatedData = $request->validated();
 
-        return BookResource::make((object)$validatedData);
+        return BookResource::collection([
+            (object)[
+                'id' => $validatedData['id'],
+                'name' => 'Lorem Ipsum',
+                'author' => 'anon',
+                'year' => 123123,
+                'countPages' => 234435
+            ],
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(BookRequest $request, string $id): BookResource
+    public function update(BookUpdateRequest $request, string $id): BookResource
     {
         $validatedData = $request->validated();
 
@@ -69,9 +81,11 @@ class BookController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id): Application|Response|
+    public function destroy(BookDestroyRequest $request, string $id): Application|Response|
     \Illuminate\Contracts\Foundation\Application|ResponseFactory
     {
+        $request->validated();
+
         return response(['message' => 'Book deleted successfully.']);
     }
 }
