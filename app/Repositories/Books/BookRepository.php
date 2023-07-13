@@ -18,11 +18,11 @@ class BookRepository
                 $data->getStartDate(), $data->getEndDate()
             ]);
 
-        if (empty($data->getYear()) === false) {
+        if (is_null($data->getYear()) === false) {
             $query->where('year', '=', $data->getYear());
         }
 
-        if (empty($data->getLang()) === false) {
+        if (is_null($data->getLang()) === false) {
             $query->where('lang', '=', $data->getLang());
         }
 
