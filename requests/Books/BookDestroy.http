@@ -1,0 +1,3 @@
+DELETE http://php-pro.loc/api/v1/books/8
+Content-Type: application/json
+Accept: application/json

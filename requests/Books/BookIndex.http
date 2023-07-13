@@ -1,0 +1,8 @@
+GET http://php-pro.loc/api/v1/books
+Content-Type: application/json
+Accept: application/json
+
+{
+    "startDate": "1970-01-01",
+    "endDate": "1985-01-01"
+}

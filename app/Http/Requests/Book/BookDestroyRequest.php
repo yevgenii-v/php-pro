@@ -15,7 +15,7 @@ class BookDestroyRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'id' => ['numeric'],
+            'id' => ['integer', 'exists:books,id'],
         ];
     }
 

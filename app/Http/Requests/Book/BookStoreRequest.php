@@ -2,8 +2,11 @@
 
 namespace App\Http\Requests\Book;
 
+use App\Enums\Lang;
+use Carbon\Carbon;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rules\Enum;
 
 class BookStoreRequest extends FormRequest
 {
@@ -15,10 +18,10 @@ class BookStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'          => ['string'],
-            'author'        => ['string'],
-            'year'          => ['numeric'],
-            'countPages'    => ['numeric'],
+            'name'          => ['string', 'min:1', 'max:255', 'unique:books,name'],
+            'year'          => ['integer', 'between:1970,' . Carbon::now()->format('Y')],
+            'lang'          => [new Enum(Lang::class)],
+            'pages'         => ['integer', 'between:10, 55000'],
         ];
     }
 }
