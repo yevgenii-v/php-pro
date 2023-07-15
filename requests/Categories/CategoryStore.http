@@ -1,0 +1,7 @@
+POST http://php-pro.loc/api/v1/categories
+Content-Type: application/json
+Accept: application/json
+
+{
+    "name": "Noire"
+}

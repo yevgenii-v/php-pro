@@ -1,0 +1,7 @@
+PATCH http://php-pro.loc/api/v1/categories/3
+Content-Type: application/json
+Accept: application/json
+
+{
+    "name": "Horror"
+}

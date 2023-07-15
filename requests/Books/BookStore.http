@@ -3,8 +3,9 @@ Content-Type: application/json
 Accept: application/json
 
 {
-    "name": "test3452",
+    "name": "test345212",
     "year": 1990,
     "lang": "ua",
-    "pages": 555
+    "pages": 555,
+    "categoryId": 2
 }

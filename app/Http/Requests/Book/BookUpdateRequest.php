@@ -6,6 +6,7 @@ use App\Enums\Lang;
 use Carbon\Carbon;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Enum;
 
 class BookUpdateRequest extends FormRequest
@@ -21,8 +22,9 @@ class BookUpdateRequest extends FormRequest
             'id'            => ['integer', 'exists:books,id'],
             'name'          => ['string', 'min:1', 'max:255', 'unique:books,name,' . $this->id],
             'year'          => ['integer', 'min:1970', 'max:' . Carbon::now()->format('Y')],
-            'lang'          => [new Enum(Lang::class)],
+            'lang'          => [Rule::enum(Lang::class)],
             'pages'         => ['integer', 'min:10', 'max:55000'],
+            'categoryId'    => ['integer', 'exists:categories,id'],
         ];
     }
 
@@ -31,5 +33,14 @@ class BookUpdateRequest extends FormRequest
         $this->merge([
             'id' => $this->route('book')
         ]);
+    }
+
+    public function validationData(): array
+    {
+        $validated = parent::validationData();
+
+        $validated['lang'] = Lang::from($validated['lang']);
+
+        return $validated;
     }
 }

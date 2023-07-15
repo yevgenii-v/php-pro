@@ -13,9 +13,6 @@ use App\Repositories\Books\BookIndexDTO;
 use App\Repositories\Books\BookStoreDTO;
 use App\Repositories\Books\BookUpdateDTO;
 use App\Services\BookService;
-use Illuminate\Contracts\Routing\ResponseFactory;
-use Illuminate\Contracts\Foundation;
-use Illuminate\Foundation\Application;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 
@@ -35,6 +32,8 @@ class BookController extends Controller
         $dto = new BookIndexDTO(...$request->validated());
         $service = $this->bookService->index($dto);
         $resource = BookResource::collection($service);
+
+
 
         return $resource->response()->setStatusCode(200);
     }
@@ -78,8 +77,7 @@ class BookController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(BookDestroyRequest $request):
-    Application|Response|ResponseFactory|Foundation\Application
+    public function destroy(BookDestroyRequest $request): Response
     {
         $validatedData = $request->validated();
         $this->bookService->destroy($validatedData['id']);

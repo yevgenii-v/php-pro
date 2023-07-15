@@ -6,7 +6,7 @@ use App\Enums\Lang;
 use Carbon\Carbon;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rules\Enum;
+use Illuminate\Validation\Rule;
 
 class BookIndexRequest extends FormRequest
 {
@@ -20,14 +20,14 @@ class BookIndexRequest extends FormRequest
         return [
             'startDate' => [
                 'required',
-                'date_format:Y-m-d',
+                'date',
                 'before:endDate',
                 'after_or_equal: 1970-01-01',
                 'before_or_equal:' . Carbon::now()->format('Y-m-d')
                 ],
             'endDate'   => [
                 'required',
-                'date_format:Y-m-d',
+                'date',
                 'after:startDate',
                 'after_or_equal: 1970-01-01',
                 'before_or_equal:' . Carbon::now()->format('Y-m-d')
@@ -40,8 +40,22 @@ class BookIndexRequest extends FormRequest
             ],
             'lang'      => [
                 'sometimes',
-                new Enum(Lang::class),
+                Rule::enum(Lang::class)
             ],
         ];
+    }
+
+    public function validationData(): array
+    {
+        $validated = parent::validationData();
+
+        $validated['startDate'] = new Carbon($validated['startDate']);
+        $validated['endDate'] = new Carbon($validated['endDate']);
+
+        if (isset($validated['lang'])) {
+            $validated['lang'] = Lang::from($validated['lang']);
+        }
+
+        return $validated;
     }
 }

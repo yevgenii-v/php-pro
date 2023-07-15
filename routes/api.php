@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\API\v1\BookController;
+use App\Http\Controllers\API\v1\CategoryController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -21,4 +22,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::group(['prefix' => 'v1'], function () {
     Route::apiResource('books', BookController::class);
+    Route::apiResource('categories', CategoryController::class);
 });

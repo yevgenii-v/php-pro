@@ -3,15 +3,15 @@
 namespace App\Repositories\Books;
 
 use App\Enums\Lang;
-use Illuminate\Validation\Rules\Enum;
+use Carbon\Carbon;
 
 class BookIndexDTO
 {
     public function __construct(
-        protected string $startDate,
-        protected string $endDate,
+        protected Carbon $startDate,
+        protected Carbon $endDate,
         protected int|null $year = null,
-        protected string|null $lang = null,
+        protected Lang|null $lang = null,
     ) {
     }
 
@@ -20,7 +20,7 @@ class BookIndexDTO
      */
     public function getStartDate(): string
     {
-        return $this->startDate;
+        return $this->startDate->format('Y-m-d');
     }
 
     /**
@@ -28,7 +28,7 @@ class BookIndexDTO
      */
     public function getEndDate(): string
     {
-        return $this->endDate;
+        return $this->endDate->format('Y-m-d');
     }
 
     /**
@@ -40,9 +40,9 @@ class BookIndexDTO
     }
 
     /**
-     * @return string|null
+     * @return Lang|null
      */
-    public function getLang(): ?string
+    public function getLang(): ?Lang
     {
         return $this->lang;
     }

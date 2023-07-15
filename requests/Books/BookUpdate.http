@@ -1,4 +1,4 @@
-PATCH http://php-pro.loc/api/v1/books/102
+PATCH http://php-pro.loc/api/v1/books/101
 Content-Type: application/json
 Accept: application/json
 
@@ -6,5 +6,6 @@ Accept: application/json
     "name": "test778",
     "year": 1991,
     "lang": "en",
-    "pages": 555
+    "pages": 555,
+    "categoryId": 2
 }

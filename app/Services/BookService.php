@@ -18,8 +18,7 @@ class BookService
 
     public function index(BookIndexDTO $data): Collection
     {
-        $query = $this->bookRepository->index($data);
-        return $this->bookRepository->getByQuery($query);
+        return $this->bookRepository->index($data);
     }
 
     public function store(BookStoreDTO $data): BookIterator
@@ -35,12 +34,12 @@ class BookService
 
     public function update(BookUpdateDTO $data): BookIterator
     {
-        $bookId = $this->bookRepository->update($data);
-        return $this->bookRepository->getById($bookId);
+        $this->bookRepository->update($data);
+        return $this->bookRepository->getById($data->getId());
     }
 
-    public function destroy(int $id): int
+    public function destroy(int $id): void
     {
-        return $this->bookRepository->destroy($id);
+        $this->bookRepository->destroy($id);
     }
 }

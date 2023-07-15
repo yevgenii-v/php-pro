@@ -14,7 +14,18 @@ class BookRepository
     public function index(BookIndexDTO $data): Collection
     {
         $query = DB::table('books')
-            ->whereBetween('created_at', [
+            ->select([
+                'books.id',
+                'books.name',
+                'year',
+                'lang',
+                'books.pages',
+                'books.created_at',
+                'category_id',
+                'categories.name as category_name'
+            ])
+            ->leftJoin('categories', 'categories.id', '=', 'books.category_id')
+            ->whereBetween('books.created_at', [
                 $data->getStartDate(), $data->getEndDate()
             ]);
 
@@ -26,7 +37,11 @@ class BookRepository
             $query->where('lang', '=', $data->getLang());
         }
 
-        return $query->get();
+        $collection = $query->get();
+
+        return $collection->map(function ($item) {
+            return new BookIterator($item);
+        });
     }
 
     public function store(BookStoreDTO $data): int
@@ -36,7 +51,9 @@ class BookRepository
             'year'          => $data->getYear(),
             'lang'          => $data->getLang(),
             'pages'         => $data->getPages(),
+            'category_id'   => $data->getCategoryId(),
             'created_at'    => Carbon::now()->timezone('Europe/Kyiv'),
+            'updated_at'    => Carbon::now()->timezone('Europe/Kyiv'),
         ]);
     }
 
@@ -45,39 +62,42 @@ class BookRepository
         return DB::table('books')->where('id', '=', $id)->first();
     }
 
-    public function update(BookUpdateDTO $data): int
+    public function update(BookUpdateDTO $data): bool
     {
-        DB::table('books')
+        return DB::table('books')
             ->where('id', '=', $data->getId())
             ->update([
             'name'          => $data->getName(),
             'year'          => $data->getYear(),
             'lang'          => $data->getLang(),
             'pages'         => $data->getPages(),
+            'category_id'   => $data->getCategoryId(),
             'updated_at'    => Carbon::now()->timezone('Europe/Kyiv'),
         ]);
-
-        return $data->getId();
     }
 
-    public function destroy(int $id): int
+    public function destroy(int $id): void
     {
-        return DB::table('books')->where('id', '=', $id)->delete();
+        DB::table('books')->where('id', '=', $id)->delete();
     }
 
     public function getById(int $id): BookIterator
     {
         return new BookIterator(
             DB::table('books')
-            ->where('id', '=', $id)
-            ->first()
+            ->select([
+                'books.id',
+                'books.name',
+                'year',
+                'lang',
+                'books.pages',
+                'books.created_at',
+                'category_id',
+                'categories.name as category_name'
+            ])
+                ->leftJoin('categories', 'categories.id', '=', 'books.category_id')
+                ->where('books.id', '=', $id)
+                ->first()
         );
-    }
-
-    public function getByQuery(Collection $query): Collection
-    {
-        return $query->map(function ($query) {
-            return new BookIterator($query);
-        });
     }
 }

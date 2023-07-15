@@ -19,11 +19,13 @@ class BookResource extends JsonResource
         $resource = $this->resource;
 
         return [
-            'id'    => $resource->getId(),
-            'name'  => $resource->getName(),
-            'year'  => $resource->getYear(),
-            'lang'  => $resource->getLang(),
-            'pages' => $resource->getPages(),
+            'id'        => $resource->getId(),
+            'name'      => $resource->getName(),
+            'year'      => $resource->getYear(),
+            'category'  => new CategoryResource($resource->getCategory()),
+            'lang'      => $resource->getLang(),
+            'pages'     => $resource->getPages(),
+            'createdAt' => $resource->getCreatedAt(),
         ];
     }
 }
