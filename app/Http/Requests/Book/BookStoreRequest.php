@@ -18,10 +18,10 @@ class BookStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'          => ['string', 'min:1', 'max:255', 'unique:books,name'],
-            'year'          => ['integer', 'between:1970,' . Carbon::now()->format('Y')],
-            'lang'          => [Rule::enum(Lang::class)],
-            'pages'         => ['integer', 'between:10, 55000'],
+            'name'          => ['string', 'min:1', 'max:255', 'unique:books,name', 'required'],
+            'year'          => ['integer', 'between:1970,' . Carbon::now()->format('Y'), 'required'],
+            'lang'          => [Rule::enum(Lang::class), 'required'],
+            'pages'         => ['integer', 'between:10, 55000', 'required'],
             'categoryId'    => ['integer', 'exists:categories,id', 'required'],
         ];
     }
@@ -30,7 +30,9 @@ class BookStoreRequest extends FormRequest
     {
         $validated = parent::validationData();
 
-        $validated['lang'] = Lang::from($validated['lang']);
+        if (isset($validated['lang'])) {
+            $validated['lang'] = Lang::from($validated['lang']);
+        }
 
         return $validated;
     }

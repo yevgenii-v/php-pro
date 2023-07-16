@@ -24,7 +24,7 @@ class BookRepository
                 'category_id',
                 'categories.name as category_name'
             ])
-            ->leftJoin('categories', 'categories.id', '=', 'books.category_id')
+            ->join('categories', 'categories.id', '=', 'books.category_id')
             ->whereBetween('books.created_at', [
                 $data->getStartDate(), $data->getEndDate()
             ]);
@@ -95,7 +95,7 @@ class BookRepository
                 'category_id',
                 'categories.name as category_name'
             ])
-                ->leftJoin('categories', 'categories.id', '=', 'books.category_id')
+                ->join('categories', 'categories.id', '=', 'books.category_id')
                 ->where('books.id', '=', $id)
                 ->first()
         );

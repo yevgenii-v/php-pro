@@ -6,7 +6,7 @@ class CategoryIterator
 {
     public function __construct(
         protected int $id,
-        protected string|null $name,
+        protected string $name,
     ) {
     }
 
@@ -19,9 +19,9 @@ class CategoryIterator
     }
 
     /**
-     * @return string|null
+     * @return string
      */
-    public function getName(): ?string
+    public function getName(): string
     {
         return $this->name;
     }
