@@ -23,11 +23,12 @@ class BookFactory extends Factory
         $createdAt = fake()->dateTimeBetween($year . '-01-01');
 
         return [
-            'name' => fake()->sentence(),
+            'name' => $this->faker->unique()->sentence(),
             'year' => $year,
             'created_at' => $createdAt,
             'lang' => $this->faker->randomElement(Lang::class),
             'pages' => fake()->numberBetween(10, 55000),
+            'category_id' => $this->faker->numberBetween(1, 200),
         ];
     }
 }

@@ -12,6 +12,7 @@ class BookIndexDTO
         protected Carbon $endDate,
         protected int|null $year = null,
         protected Lang|null $lang = null,
+        protected int $lastId = 0
     ) {
     }
 
@@ -45,5 +46,13 @@ class BookIndexDTO
     public function getLang(): ?Lang
     {
         return $this->lang;
+    }
+
+    /**
+     * @return int
+     */
+    public function getLastId(): int
+    {
+        return $this->lastId;
     }
 }

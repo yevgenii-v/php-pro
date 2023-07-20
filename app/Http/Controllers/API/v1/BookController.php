@@ -31,9 +31,10 @@ class BookController extends Controller
     {
         $dto = new BookIndexDTO(...$request->validated());
         $service = $this->bookService->index($dto);
-        $resource = BookResource::collection($service);
 
-
+        $resource = BookResource::collection($service)->additional(['meta' => [
+            'lastId' => $service->last()->getId(),
+        ]]);
 
         return $resource->response()->setStatusCode(200);
     }

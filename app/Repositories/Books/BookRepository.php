@@ -6,14 +6,13 @@ use App\Repositories\Books\Iterators\BookIterator;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 class BookRepository
 {
-    public function index(BookIndexDTO $data): Collection
+    public function index(BookIndexDTO $data): Builder
     {
-        $query = DB::table('books')
+        return DB::table('books')
             ->select([
                 'books.id',
                 'books.name',
@@ -25,23 +24,9 @@ class BookRepository
                 'categories.name as category_name'
             ])
             ->join('categories', 'categories.id', '=', 'books.category_id')
-            ->whereBetween('books.created_at', [
-                $data->getStartDate(), $data->getEndDate()
-            ]);
-
-        if (is_null($data->getYear()) === false) {
-            $query->where('year', '=', $data->getYear());
-        }
-
-        if (is_null($data->getLang()) === false) {
-            $query->where('lang', '=', $data->getLang());
-        }
-
-        $collection = $query->get();
-
-        return $collection->map(function ($item) {
-            return new BookIterator($item);
-        });
+            ->orderBy('books.id')
+            ->limit(10)
+            ->where('books.id', '>', $data->getLastId());
     }
 
     public function store(BookStoreDTO $data): int
