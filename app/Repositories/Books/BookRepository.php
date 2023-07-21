@@ -2,6 +2,7 @@
 
 namespace App\Repositories\Books;
 
+use App\Enums\Lang;
 use App\Repositories\Books\Iterators\BookIterator;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
@@ -10,10 +11,16 @@ use Illuminate\Support\Facades\DB;
 
 class BookRepository
 {
+    private Builder $query;
+
+    public function __construct()
+    {
+        $this->query = DB::table('books');
+    }
+
     public function index(BookIndexDTO $data): Builder
     {
-        return DB::table('books')
-            ->select([
+        $this->query->select([
                 'books.id',
                 'books.name',
                 'year',
@@ -27,11 +34,13 @@ class BookRepository
             ->orderBy('books.id')
             ->limit(10)
             ->where('books.id', '>', $data->getLastId());
+
+        return $this->query;
     }
 
     public function store(BookStoreDTO $data): int
     {
-        return DB::table('books')->insertGetId([
+        return $this->query->insertGetId([
             'name'          => $data->getName(),
             'year'          => $data->getYear(),
             'lang'          => $data->getLang(),
@@ -44,13 +53,13 @@ class BookRepository
 
     public function show(int $id): Model|Builder|null
     {
-        return DB::table('books')->where('id', '=', $id)->first();
+        return $this->query->where('id', '=', $id)->first();
     }
 
     public function update(BookUpdateDTO $data): bool
     {
-        return DB::table('books')
-            ->where('id', '=', $data->getId())
+        return $this->query
+            ->where('books.id', '=', $data->getId())
             ->update([
             'name'          => $data->getName(),
             'year'          => $data->getYear(),
@@ -63,13 +72,13 @@ class BookRepository
 
     public function destroy(int $id): void
     {
-        DB::table('books')->where('id', '=', $id)->delete();
+        $this->query->where('id', '=', $id)->delete();
     }
 
     public function getById(int $id): BookIterator
     {
         return new BookIterator(
-            DB::table('books')
+            $this->query
             ->select([
                 'books.id',
                 'books.name',
@@ -84,5 +93,41 @@ class BookRepository
                 ->where('books.id', '=', $id)
                 ->first()
         );
+    }
+
+    public function filterByYear(int $year): Builder
+    {
+        return $this->query->where('year', '=', $year);
+    }
+
+    public function filterByLang(Lang $lang): Builder
+    {
+        return $this->query->where('lang', '=', $lang);
+    }
+
+    public function filterByCreatedAt(string $startDate, string $endDate): Builder
+    {
+        return $this->query->where('books.created_at', '>=', $startDate)
+            ->where('books.created_at', '<=', $endDate);
+    }
+
+    public function useCreatedAtIndex(): Builder
+    {
+        return $this->query->useIndex('books_created_at_index');
+    }
+
+    public function useYearCreatedAtIndex(): Builder
+    {
+        return $this->query->useIndex('books_year_created_at_index');
+    }
+
+    public function useLangCreatedAtIndex(): Builder
+    {
+        return $this->query->useIndex('books_lang_created_at_index');
+    }
+
+    public function useYearLangCreatedAtIndex(): Builder
+    {
+        return $this->query->useIndex('books_year_lang_created_at_index');
     }
 }
