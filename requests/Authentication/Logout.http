@@ -1,0 +1,2 @@
+POST http://php-pro.loc/api/v1/logout
+Accept:application/json

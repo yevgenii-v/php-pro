@@ -1,0 +1,8 @@
+POST http://php-pro.loc/api/v1/login
+Content-Type: application/json
+Accept: application/json
+
+{
+    "email": "a@a.loc",
+    "password": "Tq32167501"
+}

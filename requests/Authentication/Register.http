@@ -1,0 +1,10 @@
+POST http://php-pro.loc/api/v1/register
+Content-Type: application/json
+Accept: application/json
+
+{
+    "name": "CreateNewUser",
+    "email": "newUser@example.loc",
+    "password": "S3cret",
+    "password_confirmation": "S3cret"
+}

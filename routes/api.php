@@ -1,8 +1,9 @@
 <?php
 
+use App\Http\Controllers\API\v1\AuthenticationController;
 use App\Http\Controllers\API\v1\BookController;
 use App\Http\Controllers\API\v1\CategoryController;
-use Illuminate\Http\Request;
+use App\Http\Middleware\API\GuestMiddleware;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,11 +17,17 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
 Route::group(['prefix' => 'v1'], function () {
-    Route::apiResource('books', BookController::class);
-    Route::apiResource('categories', CategoryController::class);
+    Route::group(['middleware' => 'auth:api'], function () {
+        Route::apiResource('books', BookController::class);
+        Route::apiResource('categories', CategoryController::class);
+
+        Route::post('/logout', [AuthenticationController::class, 'logout']);
+        Route::get('/profile', [AuthenticationController::class, 'profile']);
+    });
+
+    Route::middleware(GuestMiddleware::class)->group(function () {
+        Route::post('/login', [AuthenticationController::class, 'login']);
+        Route::post('/register', [AuthenticationController::class, 'register']);
+    });
 });
