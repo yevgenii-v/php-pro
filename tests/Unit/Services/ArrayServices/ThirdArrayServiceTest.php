@@ -29,8 +29,15 @@ class ThirdArrayServiceTest extends TestCase
     public static function handleProvider(): array
     {
         return [
-            [[1, 4, 15, 25, 2, 88, 7, 100, 2], 5],
-            [['10', 'a', 0, 10, 25, 6, 1], 3],
+            'chooseLessThenTen' => [
+                'data' => [1, 4, 15, 25, 2, 88, 7, 100, 2],
+                'expectedResult' => 5
+            ],
+
+            'chooseLessThenTenWithMixedData' => [
+                'data' => ['10', 'a', 0, 10, 25, 6, 1],
+                'expectedResult' => 3
+            ],
         ];
     }
 }

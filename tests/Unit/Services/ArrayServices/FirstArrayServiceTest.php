@@ -28,9 +28,20 @@ class FirstArrayServiceTest extends TestCase
     public static function handleProvider(): array
     {
         return [
-            [[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 6],
-            [[1, 3, 5, 7, 9], 0],
-            [['1', 'test', 4, 'a', 0, 6], 3],
+            'onlyEvenNumbers' => [
+                'data' => [0, 2, 4, 6, 8, 10],
+                'expectedResult' => 6,
+            ],
+
+            'noEvenNumbers' => [
+                'data' => [1, 3, 5, 7, 9],
+                'expectedResult' => 0,
+            ],
+
+            'evenNumbersWithMixedData' => [
+                'data' => ['1', 'test', 4, 'a', 0, 6],
+                'expectedResult' => 3,
+            ],
         ];
     }
 }

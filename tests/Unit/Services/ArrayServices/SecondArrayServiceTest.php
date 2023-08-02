@@ -32,9 +32,20 @@ class SecondArrayServiceTest extends TestCase
     public static function handleProvider(): array
     {
         return [
-            [[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10], 5],
-            [[0, 2, 4, 6, 8, 10], 0],
-            [['1', 3, 'test', 6, 'a', 1], 2],
+            'onlyOddNumbers' => [
+                'data' => [1, 3, 5, 7, 9 ],
+                'expectedResult' => 5,
+            ],
+
+            'noOddNumbers' => [
+                'data' => [0, 2, 4, 6, 8, 10],
+                'expectedResult' => 0,
+            ],
+
+            'oddNumbersWithMixedData' => [
+                'data' => ['1', 3, 'test', 6, 'a', 1],
+                'expectedResult' => 2,
+            ],
         ];
     }
 }

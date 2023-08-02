@@ -29,8 +29,15 @@ class ForthArrayServiceTest extends TestCase
     public static function handleProvider(): array
     {
         return [
-            [[15, 1, 25, 26, 21, 72, 48, 80, 96, 89, 0, 100, 28, 10], 7],
-            [['afs', '14', 26, '72', '30', 82, 90, 91], 3]
+            'biggerThen25AndOddNumbers' => [
+                'data' => [15, 1, 25, 26, 21, 72, 48, 80, 96, 89, 0, 100, 28, 10],
+                'expectedResults' => 7
+            ],
+
+            'biggerThen25WithOddNumbersAndMixedData' => [
+                'data' => ['afs', '14', 26, '72', '30', 82, 90, 91],
+                'expectedResults' => 3
+            ]
         ];
     }
 }
