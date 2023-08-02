@@ -5,33 +5,44 @@ namespace App\Http\Controllers\API\v1;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Authentication\LoginRequest;
 use App\Http\Requests\Authentication\RegisterRequest;
-use App\Http\Resources\Authentication\RegisteredUserResource;
-use App\Http\Resources\LoginResource;
-use App\Repositories\Authentication\RegisterDTO;
-use App\Services\AuthenticationService;
+use App\Http\Resources\UserResource;
+use App\Repositories\Users\RegisterDTO;
+use App\Services\Users\UserAuthService;
+use App\Services\Users\UserLoginService;
+use App\Services\Users\UserRegisterService;
+use Illuminate\Foundation\Application;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response;
 
 class AuthenticationController extends Controller
 {
     public function __construct(
-        protected AuthenticationService $authenticationService,
+        protected UserLoginService $userLoginService,
+        protected UserAuthService $userAuthService,
+        protected UserRegisterService $authRegisterService
     ) {
     }
 
     public function register(RegisterRequest $request): JsonResponse
     {
         $dto = new RegisterDTO(...$request->validated());
-        $service = $this->authenticationService->register($dto);
-        $resource = new RegisteredUserResource($service);
+        $service = $this->authRegisterService->register($dto);
+        $resource = new UserResource($service);
 
         return $resource->response()->setStatusCode(201);
     }
 
-    public function login(LoginRequest $request): JsonResponse
+    public function login(LoginRequest $request): Application|Response|JsonResponse
     {
-        $bearerToken = $this->authenticationService->getBearerToken($request);
-        $user = $this->authenticationService->getUserById($bearerToken->token->user_id);
-        $resource = new LoginResource($user);
+        $data = $request->validated();
+        $user = $this->userLoginService->login($data);
+
+        if (is_null($user) === true) {
+            return response(['error' => 'Credentials has not match']);
+        }
+
+        $bearerToken = $this->userAuthService->createUserToken();
+        $resource = new UserResource($user);
 
         return $resource->additional([
             'Bearer' => $bearerToken,
@@ -40,16 +51,18 @@ class AuthenticationController extends Controller
 
     public function profile(): JsonResponse
     {
-        $user = $this->authenticationService->getUserById(auth()->user()->id);
-        $resource = new RegisteredUserResource($user);
+        $userId = $this->userAuthService->getUserId();
+        $user = $this->authRegisterService->getUserById($userId);
+
+        $resource = new UserResource($user);
 
         return $resource->response()->setStatusCode(200);
     }
 
     public function logout(): JsonResponse
     {
-        $user = auth()->user()->token();
-        $user->revoke();
+        $userToken = $this->userAuthService->getUserToken();
+        $userToken->revoke();
 
         return response()->json(['message' => 'User was logged out.'])->setStatusCode(200);
     }

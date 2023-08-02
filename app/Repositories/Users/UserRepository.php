@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Repositories\Authentication;
+namespace App\Repositories\Users;
 
-use App\Repositories\Authentication\Iterators\RegisteredUserIterator;
+use App\Repositories\Users\Iterators\UserIterator;
 use Carbon\Carbon;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
-class AuthenticationRepository
+class UserRepository
 {
     protected Builder $query;
 
@@ -28,10 +28,12 @@ class AuthenticationRepository
         ]);
     }
 
-    public function getUserById(int $id): RegisteredUserIterator
+    public function getUserById(int $id): ?object
     {
-        return new RegisteredUserIterator(
-            $this->query->where('id', '=', $id)->first()
+        return new UserIterator(
+            $this->query
+                ->where('id', '=', $id)
+                ->first()
         );
     }
 }

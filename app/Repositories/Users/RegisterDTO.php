@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Repositories\Authentication;
+namespace App\Repositories\Users;
 
 class RegisterDTO
 {

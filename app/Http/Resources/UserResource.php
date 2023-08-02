@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Resources\Authentication;
+namespace App\Http\Resources;
 
-use App\Repositories\Authentication\Iterators\RegisteredUserIterator;
+use App\Repositories\Users\Iterators\UserIterator;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class RegisteredUserResource extends JsonResource
+class UserResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -15,7 +15,7 @@ class RegisteredUserResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
-        /** @var RegisteredUserIterator $resource */
+        /** @var UserIterator $resource */
         $resource = $this->resource;
 
         return [

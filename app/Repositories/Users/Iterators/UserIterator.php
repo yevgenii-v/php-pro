@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Repositories\Authentication\Iterators;
+namespace App\Repositories\Users\Iterators;
 
 use Carbon\Carbon;
 
-class RegisteredUserIterator
+class UserIterator
 {
     protected int $id;
 
