@@ -10,19 +10,19 @@ class UserRegisterService
 {
 
     public function __construct(
-        protected UserRepository $authenticationRepository,
+        protected UserRepository $userRepository,
     ) {
     }
 
     public function register(RegisterDTO $data): UserIterator
     {
-        $userId = $this->authenticationRepository->register($data);
+        $userId = $this->userRepository->register($data);
 
         return $this->getUserById($userId);
     }
 
     public function getUserById(int $id): UserIterator
     {
-        return $this->authenticationRepository->getUserById($id);
+        return $this->userRepository->getUserById($id);
     }
 }

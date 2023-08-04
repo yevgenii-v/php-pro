@@ -7,8 +7,10 @@ use App\Http\Requests\Authentication\LoginRequest;
 use App\Http\Requests\Authentication\RegisterRequest;
 use App\Http\Resources\UserResource;
 use App\Repositories\Users\RegisterDTO;
+use App\Services\Users\Login\LoginDTO;
+use App\Services\Users\Login\LoginService;
 use App\Services\Users\UserAuthService;
-use App\Services\Users\UserLoginService;
+use App\Services\Users\UserService;
 use App\Services\Users\UserRegisterService;
 use Illuminate\Foundation\Application;
 use Illuminate\Http\JsonResponse;
@@ -17,42 +19,39 @@ use Illuminate\Http\Response;
 class AuthenticationController extends Controller
 {
     public function __construct(
-        protected UserLoginService $userLoginService,
         protected UserAuthService $userAuthService,
-        protected UserRegisterService $authRegisterService
     ) {
     }
 
-    public function register(RegisterRequest $request): JsonResponse
+    public function register(RegisterRequest $request, UserRegisterService $authRegisterService): JsonResponse
     {
         $dto = new RegisterDTO(...$request->validated());
-        $service = $this->authRegisterService->register($dto);
+        $service = $authRegisterService->register($dto);
         $resource = new UserResource($service);
 
         return $resource->response()->setStatusCode(201);
     }
 
-    public function login(LoginRequest $request): Application|Response|JsonResponse
+    public function login(LoginRequest $request, LoginService $loginService): Application|Response|JsonResponse
     {
         $data = $request->validated();
-        $user = $this->userLoginService->login($data);
 
-        if (is_null($user) === true) {
-            return response(['error' => 'Credentials has not match']);
-        }
+        $loginDTO = new LoginDTO(...$data);
+        $user = $loginService->handle($loginDTO);
 
-        $bearerToken = $this->userAuthService->createUserToken();
-        $resource = new UserResource($user);
+        $resource = new UserResource($user->getUser());
+        $bearerToken = $user->getBearerToken();
+
 
         return $resource->additional([
             'Bearer' => $bearerToken,
         ])->response()->setStatusCode(200);
     }
 
-    public function profile(): JsonResponse
+    public function profile(UserService $userService): JsonResponse
     {
         $userId = $this->userAuthService->getUserId();
-        $user = $this->authRegisterService->getUserById($userId);
+        $user = $userService->getById($userId);
 
         $resource = new UserResource($user);
 
