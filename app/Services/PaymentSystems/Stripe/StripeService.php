@@ -5,8 +5,7 @@ namespace App\Services\PaymentSystems\Stripe;
 use App\Enums\Currency;
 use App\Services\PaymentSystems\DTO\MakePaymentDTO;
 use App\Services\PaymentSystems\PaymentSystemInterface;
-use Exception;
-use Stripe\Exception\CardException;
+use Stripe\Exception\ApiErrorException;
 use Stripe\StripeClient;
 
 class StripeService implements PaymentSystemInterface
@@ -17,6 +16,9 @@ class StripeService implements PaymentSystemInterface
     ) {
     }
 
+    /**
+     * @throws ApiErrorException
+     */
     public function makePayment(MakePaymentDTO $makePaymentDTO): bool
     {
         $result = $this->stripe->charges->create([
