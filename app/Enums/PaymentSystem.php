@@ -2,7 +2,7 @@
 
 namespace App\Enums;
 
-enum PaymentSystems: int
+enum PaymentSystem: int
 {
     case PAYPAL = 1;
     case STRIPE = 2;

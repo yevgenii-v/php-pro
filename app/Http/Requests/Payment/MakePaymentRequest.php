@@ -3,7 +3,7 @@
 namespace App\Http\Requests\Payment;
 
 use App\Enums\Currency;
-use App\Enums\PaymentSystems;
+use App\Enums\PaymentSystem;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -20,7 +20,7 @@ class MakePaymentRequest extends FormRequest
         return [
             'amount'        => ['required', 'numeric', 'min:1', 'max:9999'],
             'currency'      => ['required', Rule::enum(Currency::class)],
-            'paymentSystem' => ['required', Rule::enum(PaymentSystems::class)],
+            'paymentSystem' => ['required', Rule::enum(PaymentSystem::class)],
             'description'   => ['sometimes', 'max:255'],
         ];
     }

@@ -3,6 +3,7 @@
 use App\Http\Controllers\API\v1\AuthenticationController;
 use App\Http\Controllers\API\v1\BookController;
 use App\Http\Controllers\API\v1\CategoryController;
+use App\Http\Controllers\API\v1\PaymentSystemController;
 use App\Http\Middleware\API\GuestMiddleware;
 use Illuminate\Support\Facades\Route;
 
@@ -30,4 +31,8 @@ Route::group(['prefix' => 'v1'], function () {
         Route::post('/login', [AuthenticationController::class, 'login']);
         Route::post('/register', [AuthenticationController::class, 'register']);
     });
+
+    Route::get('payment/makePayment/{system}', [PaymentSystemController::class, 'createPayment']);
+    Route::post('payment/confirm/{system}', [PaymentSystemController::class, 'confirmPayment'])
+        ->name('payment.confirm');
 });
