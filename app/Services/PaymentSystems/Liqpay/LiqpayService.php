@@ -5,6 +5,7 @@ namespace App\Services\PaymentSystems\Liqpay;
 use App\Enums\Currency;
 use App\Enums\PaymentSystem;
 use App\Enums\TransactionStatus;
+use App\Repositories\Users\UserRepository;
 use App\Services\PaymentSystems\ConfirmPayment\PayerDTO;
 use App\Services\PaymentSystems\ConfirmPayment\PaymentInfoDTO;
 use App\Services\PaymentSystems\DTO\MakePaymentDTO;
@@ -16,6 +17,7 @@ class LiqpayService implements PaymentSystemInterface
 
     public function __construct(
         protected LiqPay $liqPay,
+        protected UserRepository $userRepository,
     ) {
     }
 
@@ -36,24 +38,22 @@ class LiqpayService implements PaymentSystemInterface
             $this->getCurrency($response->currency),
             (int)substr($response->create_date, 0, 10),
             new PayerDTO(
-                'Mark',
                 null,
                 null,
-                '127.0.0.1',
+                null,
+                $response->ip,
             ),
         );
     }
 
     public function createPayment(MakePaymentDTO $makePaymentDTO): string
     {
-        $orderId = (int)round(microtime(true) * 1000);
-
         $data = $this->liqPay->cnb_form_raw([
             'version'       => '3',
             'amount'        => $makePaymentDTO->getAmount(),
             'currency'      => $this->getCurrencyForDTO($makePaymentDTO->getCurrency()),
             'description'   => $makePaymentDTO->getDescription(),
-            'order_id'      => $orderId,
+            'order_id'      => $makePaymentDTO->getOrderId(),
             'action'        => 'pay'
         ]);
 

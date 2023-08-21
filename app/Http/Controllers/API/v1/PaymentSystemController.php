@@ -4,19 +4,22 @@ namespace App\Http\Controllers\API\v1;
 
 use App\Enums\Currency;
 use App\Enums\PaymentSystem;
-use App\Enums\TransactionStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PaymentConfirmRequest;
+use App\Services\OrderPaymentService;
 use App\Services\PaymentSystems\ConfirmPayment\ConfirmPaymentService;
 use App\Services\PaymentSystems\DTO\MakePaymentDTO;
 use App\Services\PaymentSystems\PaymentSystemFactory;
+use App\Services\Users\UserAuthService;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Http\JsonResponse;
 
 class PaymentSystemController extends Controller
 {
     public function __construct(
-        protected PaymentSystemFactory $paymentSystemFactory
+        protected PaymentSystemFactory $paymentSystemFactory,
+        protected OrderPaymentService $orderPaymentService,
+        protected UserAuthService $userAuthService,
     ) {
     }
 
@@ -29,9 +32,12 @@ class PaymentSystemController extends Controller
             PaymentSystem::from($system)
         );
 
+        $orderId = $this->orderPaymentService->store();
+
         $makePaymentDTO = new MakePaymentDTO(
             20.00,
             Currency::USD,
+            $orderId,
         );
 
         $json = $paymentService->createPayment($makePaymentDTO);
@@ -39,8 +45,8 @@ class PaymentSystemController extends Controller
 
         return response()->json([
             'order' => [
-                'id'    => $data['id'],
-                'sig'   => $data['sig'] ?? '',
+                'id'        => $data['id'],
+                'sig'       => $data['sig'] ?? '',
             ],
         ]);
     }
