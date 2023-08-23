@@ -2,29 +2,28 @@
 
 namespace App\Http\Resources;
 
-use App\Repositories\Books\Iterators\BooksWJIterator;
+use App\Models\Category;
 use App\Repositories\Categories\Iterators\CategoryIterator;
-use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class CategoryResource extends JsonResource
+class CategoryModelResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
      *
      * @return array<string, mixed>
-     * @throws Exception
      */
     public function toArray(Request $request): array
     {
-        /** @var CategoryIterator $resource */
+        /** @var Category $resource */
+
         $resource = $this->resource;
 
         return [
-            'id'    => $resource->getId(),
-            'name'  => $resource->getName(),
-            'books' => $resource->getBooks()->getResource(),
+            'id'    => $resource->id,
+            'name'  => $resource->name,
+            'books' => BookModelWithoutRelationsResource::collection($resource->books),
         ];
     }
 }

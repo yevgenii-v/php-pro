@@ -4,15 +4,19 @@ namespace App\Http\Controllers\API\v1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Book\BookDestroyRequest;
+use App\Http\Requests\Book\BookIndexIteratorRequest;
 use App\Http\Requests\Book\BookIndexRequest;
 use App\Http\Requests\Book\BookShowRequest;
 use App\Http\Requests\Book\BookStoreRequest;
 use App\Http\Requests\Book\BookUpdateRequest;
+use App\Http\Resources\BookModelResource;
 use App\Http\Resources\BookResource;
+use App\Http\Resources\BookWithoutAuthorsResource;
 use App\Repositories\Books\BookIndexDTO;
 use App\Repositories\Books\BookStoreDTO;
 use App\Repositories\Books\BookUpdateDTO;
 use App\Services\BookService;
+use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 
@@ -32,9 +36,32 @@ class BookController extends Controller
         $dto = new BookIndexDTO(...$request->validated());
         $service = $this->bookService->index($dto);
 
-        $resource = BookResource::collection($service)->additional(['meta' => [
+        $resource = BookWithoutAuthorsResource::collection($service)->additional(['meta' => [
             'lastId' => $service->last()->getId(),
         ]]);
+
+        return $resource->response()->setStatusCode(200);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function getDataByIterator(BookIndexIteratorRequest $request): JsonResponse
+    {
+        $validatedData = $request->validated();
+        $service = $this->bookService->getDataByIterator($validatedData['lastId']);
+
+        $resource = BookResource::collection($service->getIterator()->getArrayCopy());
+
+        return $resource->response()->setStatusCode(200);
+    }
+
+    public function getDataByModel(BookIndexIteratorRequest $request): JsonResponse
+    {
+        $validatedData = $request->validated();
+        $service = $this->bookService->getDataByModel($validatedData['lastId']);
+
+        $resource = BookModelResource::collection($service);
 
         return $resource->response()->setStatusCode(200);
     }
@@ -58,7 +85,7 @@ class BookController extends Controller
     {
         $validatedData = $request->validated();
         $service = $this->bookService->show($validatedData['id']);
-        $resource = BookResource::make($service);
+        $resource = BookWithoutAuthorsResource::make($service);
 
         return $resource->response()->setStatusCode(200);
     }

@@ -20,7 +20,11 @@ use Illuminate\Support\Facades\Route;
 
 Route::group(['prefix' => 'v1'], function () {
     Route::group(['middleware' => 'auth:api'], function () {
+        Route::get('booksIterator', [BookController::class, 'getDataByIterator']);
+        Route::get('booksModel', [BookController::class, 'getDataByModel']);
         Route::apiResource('books', BookController::class);
+        Route::get('categoryIterator/{category}', [CategoryController::class, 'showIterator']);
+        Route::get('categoryModel/{category}', [CategoryController::class, 'showModel']);
         Route::apiResource('categories', CategoryController::class);
 
         Route::post('/logout', [AuthenticationController::class, 'logout']);

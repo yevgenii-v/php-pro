@@ -1,0 +1,3 @@
+GET http://php-pro.loc/api/v1/categoryModel/1
+Content-Type: application/json
+Accept: application/json

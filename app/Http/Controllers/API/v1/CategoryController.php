@@ -7,6 +7,7 @@ use App\Http\Requests\Category\CategoryDestroyRequest;
 use App\Http\Requests\Category\CategoryShowRequest;
 use App\Http\Requests\Category\CategoryStoreRequest;
 use App\Http\Requests\Category\CategoryUpdateRequest;
+use App\Http\Resources\CategoryModelResource;
 use App\Http\Resources\CategoryResource;
 use App\Repositories\Categories\CategoryStoreDTO;
 use App\Repositories\Categories\CategoryUpdateDTO;
@@ -53,6 +54,26 @@ class CategoryController extends Controller
         $validatedData = $request->validated();
         $service = $this->categoryService->show($validatedData['id']);
         $resource = CategoryResource::make($service);
+
+        return $resource->response()->setStatusCode(200);
+    }
+
+    public function showIterator(CategoryShowRequest $request): JsonResponse
+    {
+        $validatedData = $request->validated();
+        $service = $this->categoryService->showIterator($validatedData['id']);
+
+        $resource = CategoryResource::make($service);
+
+        return $resource->response()->setStatusCode(200);
+    }
+
+    public function showModel(CategoryShowRequest $request): JsonResponse
+    {
+        $validatedData = $request->validated();
+        $service = $this->categoryService->showModel($validatedData['id']);
+
+        $resource = CategoryModelResource::make($service);
 
         return $resource->response()->setStatusCode(200);
     }

@@ -3,6 +3,7 @@
 namespace App\Repositories\Books\Iterators;
 
 use App\Enums\Lang;
+use App\Repositories\Authors\Iterators\AuthorsIterator;
 use App\Repositories\Categories\Iterators\CategoryIterator;
 use Carbon\Carbon;
 
@@ -12,6 +13,7 @@ class BookIterator
     protected string $name;
     protected int $year;
     protected CategoryIterator $category;
+    protected AuthorsIterator $authors;
     protected Lang $lang;
     protected int $pages;
     protected Carbon $createdAt;
@@ -24,10 +26,6 @@ class BookIterator
         $this->id           = $data->id;
         $this->name         = $data->name;
         $this->year         = $data->year;
-        $this->category     = new CategoryIterator(
-            $data->category_id,
-            $data->category_name,
-        );
         $this->lang         = Lang::from($data->lang);
         $this->pages        = $data->pages;
         $this->createdAt    = new Carbon($data->created_at);
@@ -79,6 +77,21 @@ class BookIterator
     public function getCategory(): CategoryIterator
     {
         return $this->category;
+    }
+
+    public function setCategory(CategoryIterator $category): void
+    {
+        $this->category = $category;
+    }
+
+    public function getAuthors(): AuthorsIterator
+    {
+        return $this->authors;
+    }
+
+    public function setAuthors(AuthorsIterator $authors): void
+    {
+        $this->authors = $authors;
     }
 
     /**

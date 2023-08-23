@@ -1,0 +1,8 @@
+GET https://php-pro.loc/api/v1/booksIterator
+Content-Type: application/json
+Accept: application/json
+Cookie: XDEBUG_SESSION=PHPSTORM
+
+{
+    "lastId": 0
+}

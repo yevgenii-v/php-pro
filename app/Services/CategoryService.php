@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Category;
 use App\Repositories\Categories\CategoryRepository;
 use App\Repositories\Categories\CategoryStoreDTO;
 use App\Repositories\Categories\CategoryUpdateDTO;
@@ -29,6 +30,16 @@ class CategoryService
     public function show(int $id): CategoryIterator
     {
         return $this->categoryRepository->getById($id);
+    }
+
+    public function showIterator(int $id): CategoryIterator
+    {
+        return $this->categoryRepository->getByIdIterator($id);
+    }
+
+    public function showModel(int $id): Category
+    {
+        return $this->categoryRepository->getByIdModel($id);
     }
 
     public function update(CategoryUpdateDTO $data): CategoryIterator

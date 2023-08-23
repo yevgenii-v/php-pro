@@ -7,6 +7,8 @@ use App\Repositories\Books\BookRepository;
 use App\Repositories\Books\BookStoreDTO;
 use App\Repositories\Books\BookUpdateDTO;
 use App\Repositories\Books\Iterators\BookIterator;
+use App\Repositories\Books\Iterators\BooksIterator;
+use App\Repositories\Categories\Iterators\CategoryIterator;
 use Illuminate\Support\Collection;
 
 class BookService
@@ -43,8 +45,24 @@ class BookService
         $collection = $query->get();
 
         return $collection->map(function ($book) {
-            return new BookIterator($book);
+            $bookIterator = new BookIterator($book);
+            $bookIterator->setCategory(new CategoryIterator((object)[
+                'id'    => $book->category_id,
+                'name'  => $book->category_name,
+            ]));
+
+            return $bookIterator;
         });
+    }
+
+    public function getDataByIterator(int $lastId): BooksIterator
+    {
+        return $this->bookRepository->getDataByIterator($lastId);
+    }
+
+    public function getDataByModel(int $lastId): Collection
+    {
+        return $this->bookRepository->getDataByModel($lastId);
     }
 
     public function store(BookStoreDTO $data): BookIterator
