@@ -132,7 +132,7 @@ class BookRepository
             ->join('authors', 'author_book.author_id', '=', 'authors.id')
             ->orderBy('books.id')
             ->where('books.id', '>', $lastId)
-            ->limit(10)
+            ->limit(2000)
             ->get();
 
         return new BooksIterator($result);
