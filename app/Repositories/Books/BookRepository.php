@@ -6,6 +6,7 @@ use App\Enums\Lang;
 use App\Models\Book;
 use App\Repositories\Books\Iterators\BookIterator;
 use App\Repositories\Books\Iterators\BooksIterator;
+use App\Repositories\Books\Iterators\BookWithoutAuthorsIterator;
 use App\Repositories\Categories\Iterators\CategoryIterator;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
@@ -79,7 +80,7 @@ class BookRepository
         $this->query->where('id', '=', $id)->delete();
     }
 
-    public function getById(int $id): BookIterator
+    public function getById(int $id): BookWithoutAuthorsIterator
     {
         $bookQuery = $this->query
             ->select([
@@ -96,13 +97,18 @@ class BookRepository
             ->where('books.id', '=', $id)
             ->first();
 
-        $book = new BookIterator($bookQuery);
-        $book->setCategory(new CategoryIterator((object)[
-            'id'    => $bookQuery->category_id,
-            'name'  => $bookQuery->category_name,
-        ]));
-
-        return $book;
+        return new BookWithoutAuthorsIterator((object)[
+            'id'            => $bookQuery->id,
+            'name'          => $bookQuery->name,
+            'year'          => $bookQuery->year,
+            'category'      => (object)[
+                'id'        => $bookQuery->category_id,
+                'name'      => $bookQuery->category_name,
+            ],
+            'lang'          => $bookQuery->lang,
+            'pages'         => $bookQuery->pages,
+            'created_at'    => $bookQuery->created_at,
+        ]);
     }
 
     public function getDataByIterator(int $lastId = 0): BooksIterator
@@ -126,7 +132,7 @@ class BookRepository
             ->join('authors', 'author_book.author_id', '=', 'authors.id')
             ->orderBy('books.id')
             ->where('books.id', '>', $lastId)
-            ->limit(2000)
+            ->limit(10)
             ->get();
 
         return new BooksIterator($result);

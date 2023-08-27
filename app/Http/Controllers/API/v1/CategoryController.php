@@ -7,8 +7,9 @@ use App\Http\Requests\Category\CategoryDestroyRequest;
 use App\Http\Requests\Category\CategoryShowRequest;
 use App\Http\Requests\Category\CategoryStoreRequest;
 use App\Http\Requests\Category\CategoryUpdateRequest;
-use App\Http\Resources\CategoryModelResource;
-use App\Http\Resources\CategoryResource;
+use App\Http\Resources\Category\CategoryModelResource;
+use App\Http\Resources\Category\CategoryResource;
+use App\Http\Resources\Category\CategoryWithoutBooksResource;
 use App\Repositories\Categories\CategoryStoreDTO;
 use App\Repositories\Categories\CategoryUpdateDTO;
 use App\Services\CategoryService;
@@ -29,7 +30,7 @@ class CategoryController extends Controller
     public function index(): JsonResponse
     {
         $service = $this->categoryService->index();
-        $resource = CategoryResource::collection($service);
+        $resource = CategoryWithoutBooksResource::collection($service);
 
         return $resource->response()->setStatusCode(200);
     }
@@ -53,7 +54,7 @@ class CategoryController extends Controller
     {
         $validatedData = $request->validated();
         $service = $this->categoryService->show($validatedData['id']);
-        $resource = CategoryResource::make($service);
+        $resource = CategoryWithoutBooksResource::make($service);
 
         return $resource->response()->setStatusCode(200);
     }
@@ -63,7 +64,7 @@ class CategoryController extends Controller
         $validatedData = $request->validated();
         $service = $this->categoryService->showIterator($validatedData['id']);
 
-        $resource = CategoryResource::make($service);
+        $resource = CategoryResource::collection($service->getIterator()->getArrayCopy());
 
         return $resource->response()->setStatusCode(200);
     }

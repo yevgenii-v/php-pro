@@ -7,6 +7,8 @@ use App\Repositories\Categories\CategoryRepository;
 use App\Repositories\Categories\CategoryStoreDTO;
 use App\Repositories\Categories\CategoryUpdateDTO;
 use App\Repositories\Categories\Iterators\CategoryIterator;
+use App\Repositories\Categories\Iterators\CategoryWithBooksIterator;
+use App\Repositories\Categories\Iterators\CategoryWithoutBooksIterator;
 use Illuminate\Support\Collection;
 
 class CategoryService
@@ -21,18 +23,18 @@ class CategoryService
         return $this->categoryRepository->index();
     }
 
-    public function store(CategoryStoreDTO $data): CategoryIterator
+    public function store(CategoryStoreDTO $data): CategoryWithoutBooksIterator
     {
         $categoryId = $this->categoryRepository->store($data);
         return $this->categoryRepository->getById($categoryId);
     }
 
-    public function show(int $id): CategoryIterator
+    public function show(int $id): CategoryWithoutBooksIterator
     {
         return $this->categoryRepository->getById($id);
     }
 
-    public function showIterator(int $id): CategoryIterator
+    public function showIterator(int $id): CategoryWithBooksIterator
     {
         return $this->categoryRepository->getByIdIterator($id);
     }
@@ -42,7 +44,7 @@ class CategoryService
         return $this->categoryRepository->getByIdModel($id);
     }
 
-    public function update(CategoryUpdateDTO $data): CategoryIterator
+    public function update(CategoryUpdateDTO $data): CategoryWithoutBooksIterator
     {
         $this->categoryRepository->update($data);
         return $this->categoryRepository->getById($data->getId());

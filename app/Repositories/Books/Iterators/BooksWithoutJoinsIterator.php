@@ -6,7 +6,7 @@ use ArrayIterator;
 use Illuminate\Support\Collection;
 use IteratorAggregate;
 
-class BooksWJIterator implements IteratorAggregate
+class BooksWithoutJoinsIterator implements IteratorAggregate
 {
 
     protected array $data = [];
@@ -14,7 +14,7 @@ class BooksWJIterator implements IteratorAggregate
     public function __construct(Collection $collection)
     {
         foreach ($collection as $item) {
-            $this->data[] = new BookIterator($item);
+            $this->data[] = new BookWithoutJoinsIterator($item);
         }
     }
 

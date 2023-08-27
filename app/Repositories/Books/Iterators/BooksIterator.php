@@ -33,9 +33,20 @@ class BooksIterator implements IteratorAggregate
         }
 
         foreach ($tmpData as $dataItem) {
-            $bookIterator = new BookIterator($dataItem);
-            $bookIterator->setAuthors(new AuthorsIterator($dataItem->authors));
-            $bookIterator->setCategory(new CategoryIterator($dataItem->category));
+            $bookIterator = new BookIterator((object)[
+                'id'    => $dataItem->id,
+                'name'  => $dataItem->name,
+                'year'  => $dataItem->year,
+                'category' => (object)[
+                    'id'    => $dataItem->category_id,
+                    'name'  => $dataItem->category_name,
+                ],
+                'authors' => $dataItem->authors,
+                'lang'  => $dataItem->lang,
+                'pages'  => $dataItem->pages,
+                'created_at'  => $dataItem->created_at,
+            ]);
+
             $this->data[] = $bookIterator;
         }
     }

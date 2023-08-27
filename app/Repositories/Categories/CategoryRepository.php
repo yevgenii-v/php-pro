@@ -3,8 +3,11 @@
 namespace App\Repositories\Categories;
 
 use App\Models\Category;
-use App\Repositories\Books\Iterators\BooksWJIterator;
+use App\Repositories\Books\Iterators\BooksIterator;
+use App\Repositories\Books\Iterators\BooksWithoutJoinsIterator;
 use App\Repositories\Categories\Iterators\CategoryIterator;
+use App\Repositories\Categories\Iterators\CategoryWithBooksIterator;
+use App\Repositories\Categories\Iterators\CategoryWithoutBooksIterator;
 use Carbon\Carbon;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Collection;
@@ -25,7 +28,7 @@ class CategoryRepository
         $collection = $this->categories->get();
 
         return $collection->map(function (object $item) {
-            return new CategoryIterator($item);
+            return new CategoryWithoutBooksIterator($item);
         });
     }
 
@@ -53,18 +56,19 @@ class CategoryRepository
         $this->categories->where('id', '=', $id)->delete();
     }
 
-    public function getById(int $id): CategoryIterator
+    public function getById(int $id): CategoryWithoutBooksIterator
     {
         $collection = $this->categories
             ->where('id', '=', $id)
             ->first();
 
-        return new CategoryIterator($collection);
+        return new CategoryWithoutBooksIterator($collection);
     }
 
-    public function getByIdIterator(int $id): CategoryIterator
+    public function getByIdIterator(int $id): CategoryWithBooksIterator
     {
-        $categoryQuery = $this->categories
+
+        $result = $this->categories
             ->select([
                 'categories.id as category_id',
                 'categories.name as category_name',
@@ -81,17 +85,7 @@ class CategoryRepository
             ->limit(10)
             ->get();
 
-
-            $category = new CategoryIterator((object)[
-                'id'    => $categoryQuery->first()->category_id,
-                'name'  => $categoryQuery->first()->category_name,
-            ]);
-
-
-
-        $category->setBooks(new BooksWJIterator($categoryQuery));
-
-        return $category;
+        return new CategoryWithBooksIterator($result);
     }
 
     public function getByIdModel(int $id): Category

@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Http\Resources;
+namespace App\Http\Resources\Category;
 
-use App\Repositories\Books\Iterators\BooksWJIterator;
+use App\Http\Resources\Book\BookForCategoryResource;
 use App\Repositories\Categories\Iterators\CategoryIterator;
 use Exception;
 use Illuminate\Http\Request;
@@ -24,7 +24,7 @@ class CategoryResource extends JsonResource
         return [
             'id'    => $resource->getId(),
             'name'  => $resource->getName(),
-            'books' => $resource->getBooks()->getResource(),
+            'books' => BookForCategoryResource::collection($resource->getBooks()->getIterator()->getArrayCopy()),
         ];
     }
 }

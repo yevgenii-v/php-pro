@@ -2,21 +2,20 @@
 
 namespace App\Repositories\Categories\Iterators;
 
-use App\Repositories\Books\Iterators\BooksIterator;
-use App\Repositories\Books\Iterators\BooksWJIterator;
-use Illuminate\Support\Collection;
+use App\Repositories\Books\Iterators\BooksWithoutJoinsIterator;
 
 class CategoryIterator
 {
 
     protected int $id;
     protected string $name;
-    protected BooksWJIterator $books;
+    protected BooksWithoutJoinsIterator $books;
 
     public function __construct(object $data)
     {
-        $this->id = $data->id;
-        $this->name = $data->name;
+        $this->id       = $data->id;
+        $this->name     = $data->name;
+        $this->books    = new BooksWithoutJoinsIterator($data->books);
     }
 
     /**
@@ -35,13 +34,11 @@ class CategoryIterator
         return $this->name;
     }
 
-    public function getBooks(): BooksWJIterator
+    /**
+     * @return BooksWithoutJoinsIterator
+     */
+    public function getBooks(): BooksWithoutJoinsIterator
     {
         return $this->books;
-    }
-
-    public function setBooks(BooksWJIterator $booksIterator): void
-    {
-        $this->books = $booksIterator;
     }
 }

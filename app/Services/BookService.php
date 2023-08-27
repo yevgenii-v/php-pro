@@ -8,7 +8,7 @@ use App\Repositories\Books\BookStoreDTO;
 use App\Repositories\Books\BookUpdateDTO;
 use App\Repositories\Books\Iterators\BookIterator;
 use App\Repositories\Books\Iterators\BooksIterator;
-use App\Repositories\Categories\Iterators\CategoryIterator;
+use App\Repositories\Books\Iterators\BookWithoutAuthorsIterator;
 use Illuminate\Support\Collection;
 
 class BookService
@@ -45,13 +45,18 @@ class BookService
         $collection = $query->get();
 
         return $collection->map(function ($book) {
-            $bookIterator = new BookIterator($book);
-            $bookIterator->setCategory(new CategoryIterator((object)[
-                'id'    => $book->category_id,
-                'name'  => $book->category_name,
-            ]));
-
-            return $bookIterator;
+            return new BookWithoutAuthorsIterator((object)[
+                'id'            => $book->id,
+                'name'          => $book->name,
+                'year'          => $book->year,
+                'category'      => (object)[
+                    'id'        => $book->category_id,
+                    'name'      => $book->category_name,
+                ],
+                'lang'          => $book->lang,
+                'pages'         => $book->pages,
+                'created_at'    => $book->created_at,
+            ]);
         });
     }
 
@@ -65,18 +70,18 @@ class BookService
         return $this->bookRepository->getDataByModel($lastId);
     }
 
-    public function store(BookStoreDTO $data): BookIterator
+    public function store(BookStoreDTO $data): BookWithoutAuthorsIterator
     {
         $bookId = $this->bookRepository->store($data);
         return $this->bookRepository->getById($bookId);
     }
 
-    public function show(int $id): BookIterator
+    public function show(int $id): BookWithoutAuthorsIterator
     {
         return $this->bookRepository->getById($id);
     }
 
-    public function update(BookUpdateDTO $data): BookIterator
+    public function update(BookUpdateDTO $data): BookWithoutAuthorsIterator
     {
         $this->bookRepository->update($data);
         return $this->bookRepository->getById($data->getId());
