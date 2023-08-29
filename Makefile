@@ -44,6 +44,3 @@ sh:
 
 psql:
 	@docker compose exec php_pro_db /bin/bash
-
-inspect:
-	@docker inspect php_pro_db | grep "IPAddress"
