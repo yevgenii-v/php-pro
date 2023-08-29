@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+
+    php_pro_php_api:
+        image: php_pro_php_api:latest
+        restart: always
+        volumes:
+            - ./:/var/www/html
+        networks:
+            - php_pro_networks
+
+    php_pro_db:
+        image: postgres:14
+        restart: always
+        volumes:
+            - db_storage:/var/lib/postgresql/data
+        networks:
+            - php_pro_networks
+
+    php_pro_nginx_api:
+        image: nginx:alpine
+        restart: always
+        volumes:
+            - ./docker/nginx/api.conf:/etc/nginx/conf.d/default.conf
+            - ./:/var/www/html
+        networks:
+            - php_pro_networks
+
+    php_pro_redis:
+        image: bitnami/redis
+        restart: always
+        volumes:
+            - ./:/var/www/html
+        networks:
+            - php_pro_networks
+
+    php_pro_rabbitmq:
+        image: rabbitmq:management
+        restart: always
+        volumes:
+            - rabbitmq_storage:/var/lib/rabbitmq/
+        networks:
+            - php_pro_networks
