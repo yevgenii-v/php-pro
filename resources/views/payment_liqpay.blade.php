@@ -35,7 +35,7 @@
                             'Accept': 'application/json',
                             'Content-Type': 'application/json'
                         },
-                        body: JSON.stringify({ paymentId: data.order_id })
+                        body: JSON.stringify({ paymentId: data.payment_id + '' })
                     }).then(function (response) {
                         console.log(response)
                     })

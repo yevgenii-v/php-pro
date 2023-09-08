@@ -2,17 +2,18 @@
 
 namespace App\Http\Controllers\API\v1;
 
-use App\Enums\Currency;
-use App\Enums\PaymentSystem;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PaymentConfirmRequest;
 use App\Services\OrderPaymentService;
 use App\Services\PaymentSystems\ConfirmPayment\ConfirmPaymentService;
-use App\Services\PaymentSystems\DTO\MakePaymentDTO;
-use App\Services\PaymentSystems\PaymentSystemFactory;
 use App\Services\Users\UserAuthService;
 use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Http\JsonResponse;
+use Throwable;
+use YevgeniiV\PsPackage\Enums\Currency;
+use YevgeniiV\PsPackage\PaymentSystems\DTO\MakePaymentDTO;
+use YevgeniiV\PsPackage\PaymentSystems\PaymentSystemFactory;
+use YevgeniiV\PsPackage\Enums\PaymentSystem;
 
 class PaymentSystemController extends Controller
 {
@@ -25,11 +26,13 @@ class PaymentSystemController extends Controller
 
     /**
      * @throws BindingResolutionException
+     * @throws Throwable
      */
     public function createPayment(int $system): JsonResponse
     {
         $paymentService = $this->paymentSystemFactory->getInstance(
-            PaymentSystem::from($system)
+            PaymentSystem::from($system),
+            config('paymentSystems')
         );
 
         $orderId = $this->orderPaymentService->store();
@@ -55,7 +58,7 @@ class PaymentSystemController extends Controller
         PaymentConfirmRequest $request,
         ConfirmPaymentService $confirmPaymentService,
         int $system
-    ): int {
+    ): JsonResponse {
         $data = $request->validated();
 
         $result = $confirmPaymentService->handle(
@@ -63,6 +66,8 @@ class PaymentSystemController extends Controller
             $data['paymentId']
         );
 
-        return $result->paymentStatus()->value;
+        return response()->json([
+            'status' => $result->isPaymentSuccess(),
+        ]);
     }
 }

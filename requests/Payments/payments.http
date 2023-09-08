@@ -4,11 +4,11 @@ Accept: application/json
 Cookie: XDEBUG_SESSION=PHPSTORM
 
 ####
-POST http://php-pro.loc/api/v1/payment/confirm/2
+POST http://php-pro.loc/api/v1/payment/confirm/3
 Content-Type: application/json
 Accept: application/json
 Cookie: XDEBUG_SESSION=PHPSTORM
 
 {
-  "paymentId": "pi_3Nf19DG83Ct2nCXl0mUgMzPe"
+  "paymentId": "2362727916"
 }

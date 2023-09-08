@@ -53,7 +53,7 @@
             // Confirm the payment given the clientSecret
             // from the payment intent that was just created on
             // the server.
-            const {error: stripeError} = await stripe.confirmPayment({
+            const { error: stripeError } = await stripe.confirmPayment({
                 elements,
                 confirmParams: {
                     return_url: `${window.location.origin}/payment_stripe`,
@@ -72,9 +72,9 @@
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({paymentId: redirectResult})
+                body: JSON.stringify({ paymentId: redirectResult })
             }).then(function (response) {
-                alert(response)
+                console.log(response)
             })
                 .catch(function (error) {
                     console.error('Помилка при виконанні оплати через Stripe на бекенді: ', error);
@@ -93,6 +93,7 @@
 
         // Initialize Stripe Elements with the PaymentIntent's clientSecret,
         // then mount the payment element.
+
     });
 </script>
 </body>

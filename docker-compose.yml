@@ -10,13 +10,13 @@ services:
         networks:
             - php_pro_networks
 
-    php_pro_db:
-        image: postgres:14
-        restart: always
-        volumes:
-            - db_storage:/var/lib/postgresql/data
-        networks:
-            - php_pro_networks
+#    php_pro_db:
+#        image: postgres:14
+#        restart: always
+#        volumes:
+#            - db_storage:/var/lib/postgresql/data
+#        networks:
+#            - php_pro_networks
 
     php_pro_nginx_api:
         image: nginx:alpine

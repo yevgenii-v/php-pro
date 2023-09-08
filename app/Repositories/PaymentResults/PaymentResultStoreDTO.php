@@ -2,17 +2,16 @@
 
 namespace App\Repositories\PaymentResults;
 
-use App\Enums\Currency;
-use App\Enums\PaymentSystem;
-use App\Enums\TransactionStatus;
-use App\Repositories\Users\Iterators\UserIterator;
+use YevgeniiV\PsPackage\Enums\Currency;
+use YevgeniiV\PsPackage\Enums\PaymentSystem;
+use YevgeniiV\PsPackage\Enums\Status;
 
 class PaymentResultStoreDTO
 {
     protected PaymentSystem $paymentSystem;
 
     public function __construct(
-        protected TransactionStatus $status,
+        protected bool $status,
         protected string $orderId,
         protected string $paymentId,
         protected int $userId,
@@ -21,7 +20,7 @@ class PaymentResultStoreDTO
     ) {
     }
 
-    public function getStatus(): TransactionStatus
+    public function getStatus(): bool
     {
         return $this->status;
     }

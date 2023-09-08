@@ -4,31 +4,35 @@ namespace App\Services\PaymentSystems\ConfirmPayment\Handlers;
 
 use App\Services\PaymentSystems\ConfirmPayment\ConfirmPaymentDTO;
 use App\Services\PaymentSystems\ConfirmPayment\ConfirmPaymentInterface;
-use App\Services\PaymentSystems\ConfirmPayment\PaymentInfoDTO;
-use App\Services\PaymentSystems\PaymentSystemFactory;
 use Closure;
 use Illuminate\Contracts\Container\BindingResolutionException;
+use Throwable;
+use YevgeniiV\PsPackage\Enums\Status;
+use YevgeniiV\PsPackage\PaymentSystems\PaymentSystemFactory;
 
 class CheckPaymentResultHandler implements ConfirmPaymentInterface
 {
-
     public function __construct(
         protected PaymentSystemFactory $paymentSystemFactory,
     ) {
     }
 
     /**
-     * @throws BindingResolutionException
+     * @throws BindingResolutionException|Throwable
      */
     public function handle(ConfirmPaymentDTO $confirmPaymentDTO, Closure $next): ConfirmPaymentDTO
     {
         $paymentService = $this->paymentSystemFactory->getInstance(
-            $confirmPaymentDTO->getPaymentSystems()
+            $confirmPaymentDTO->getPaymentSystem(),
+            config('paymentSystems')
         );
 
-        $data = $paymentService->validatePayment($confirmPaymentDTO->getPaymentId());
+        $paymentInfo = $paymentService->getPaymentInfo($confirmPaymentDTO->getPaymentId());
 
-        $confirmPaymentDTO->setPaymentStatus($data->getStatus());
+        $confirmPaymentDTO->setPaymentSuccess(
+            $paymentInfo->getStatus() === Status::SUCCESS
+        );
+        $confirmPaymentDTO->setPaymentInfo($paymentInfo);
 
         return $next($confirmPaymentDTO);
     }
