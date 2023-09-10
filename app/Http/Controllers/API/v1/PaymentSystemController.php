@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API\v1;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PaymentConfirmRequest;
+use App\Http\Resources\PaymentResource;
 use App\Services\OrderPaymentService;
 use App\Services\PaymentSystems\ConfirmPayment\ConfirmPaymentService;
 use App\Services\Users\UserAuthService;
@@ -58,7 +59,7 @@ class PaymentSystemController extends Controller
         PaymentConfirmRequest $request,
         ConfirmPaymentService $confirmPaymentService,
         int $system
-    ): JsonResponse {
+    ): PaymentResource {
         $data = $request->validated();
 
         $result = $confirmPaymentService->handle(
@@ -66,8 +67,6 @@ class PaymentSystemController extends Controller
             $data['paymentId']
         );
 
-        return response()->json([
-            'status' => $result->isPaymentSuccess(),
-        ]);
+        return new PaymentResource($result);
     }
 }
