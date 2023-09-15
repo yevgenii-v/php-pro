@@ -29,6 +29,8 @@ Route::group(['prefix' => 'v1'], function () {
 
         Route::post('/logout', [AuthenticationController::class, 'logout']);
         Route::get('/profile', [AuthenticationController::class, 'profile']);
+
+        Route::get('/categoriesWithCache', [CategoryController::class, 'cachedIndex']);
 //    });
 
     Route::middleware(GuestMiddleware::class)->group(function () {

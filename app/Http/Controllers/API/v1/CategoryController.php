@@ -12,15 +12,17 @@ use App\Http\Resources\Category\CategoryResource;
 use App\Http\Resources\Category\CategoryWithoutBooksResource;
 use App\Repositories\Categories\CategoryStoreDTO;
 use App\Repositories\Categories\CategoryUpdateDTO;
+use App\Services\CategoryWithCacheService;
 use App\Services\CategoryService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
+use Illuminate\Support\Collection;
 
 class CategoryController extends Controller
 {
-
     public function __construct(
         protected CategoryService $categoryService,
+        protected CategoryWithCacheService $categoryWithCacheService,
     ) {
     }
 
@@ -32,6 +34,17 @@ class CategoryController extends Controller
         $service = $this->categoryService->index();
         $resource = CategoryWithoutBooksResource::collection($service);
 
+        return $resource->response()->setStatusCode(200);
+    }
+
+    /**
+     * @return JsonResponse
+     */
+    public function cachedIndex(): JsonResponse
+    {
+        $service = $this->categoryWithCacheService->getCategories();
+
+        $resource = CategoryWithoutBooksResource::collection($service);
         return $resource->response()->setStatusCode(200);
     }
 

@@ -44,3 +44,6 @@ sh:
 
 psql:
 	@docker compose exec php_pro_db /bin/bash
+
+redis:
+	@docker compose exec php_pro_redis /bin/bash
