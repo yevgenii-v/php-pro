@@ -8,6 +8,8 @@ use Illuminate\Support\Collection;
 
 class CategoryWithCacheService
 {
+    public const SECONDS = 20;
+
     public function __construct(
         protected CategoryRepository $categoryRepository,
         protected CacheService $cacheService,
@@ -19,12 +21,11 @@ class CategoryWithCacheService
      */
     public function getCategories(): Collection
     {
-        $seconds = 20;
         $cachedData = $this->cacheService->get('categories');
 
         if ($cachedData === null) {
             $query = $this->categoryRepository->index();
-            $this->cacheService->set('categories', $query, $seconds);
+            $this->cacheService->set('categories', $query, self::SECONDS);
             return $query;
         }
 
