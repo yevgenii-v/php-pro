@@ -8,7 +8,6 @@ use IteratorAggregate;
 
 class AuthorsIterator implements IteratorAggregate
 {
-
     protected array $data = [];
 
     /**

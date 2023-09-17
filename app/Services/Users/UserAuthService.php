@@ -31,4 +31,9 @@ class UserAuthService
     {
         return auth()->user()->token();
     }
+
+    public function authCheck(): bool
+    {
+        return auth()->check();
+    }
 }

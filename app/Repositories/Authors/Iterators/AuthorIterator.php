@@ -22,14 +22,4 @@ class AuthorIterator
     {
         return $this->name;
     }
-
-//    public function getAuthorId(): array
-//    {
-//        return ['id' => $this->getId()];
-//    }
-
-//    public function getAuthorName(): array
-//    {
-//        return ['name' => $this->getName()];
-//    }
 }

@@ -10,7 +10,6 @@ use IteratorAggregate;
 
 class BooksIterator implements IteratorAggregate
 {
-
     protected array $data = [];
 
     public function __construct(Collection $collection)

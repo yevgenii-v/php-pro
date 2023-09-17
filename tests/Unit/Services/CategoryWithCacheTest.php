@@ -10,6 +10,7 @@ use PHPUnit\Framework\TestCase;
 
 class CategoryWithCacheTest extends TestCase
 {
+    public const SECONDS = 20;
     protected CacheService $cacheService;
     protected CategoryRepository $categoryRepository;
     protected CategoryWithCacheService $categoryService;
@@ -71,7 +72,7 @@ class CategoryWithCacheTest extends TestCase
         $this->cacheService
             ->expects(self::once())
             ->method('set')
-            ->with('categories', $dbData, 20);
+            ->with('categories', $dbData, self::SECONDS);
 
         $result = $this->categoryService->getCategories();
 

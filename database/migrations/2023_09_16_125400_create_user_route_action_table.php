@@ -11,8 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('books', function (Blueprint $table) {
-            $table->bigInteger('pages')->change();
+        Schema::create('user_route_action', function (Blueprint $table) {
+            $table->id();
+            $table->bigInteger('user_id');
+            $table->enum('method', ['GET', 'POST', 'PATCH', 'PUT', 'DELETE']);
+            $table->string('route');
+            $table->timestamp('created_at');
         });
     }
 
@@ -21,8 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('books', function (Blueprint $table) {
-            $table->unsignedSmallInteger('pages')->change();
-        });
+        Schema::dropIfExists('user_route_action');
     }
 };

@@ -22,7 +22,6 @@ use Illuminate\Http\Response;
 
 class BookController extends Controller
 {
-
     public function __construct(
         protected BookService $bookService
     ) {
@@ -73,7 +72,7 @@ class BookController extends Controller
     {
         $dto = new BookStoreDTO(...$request->validated());
         $service = $this->bookService->store($dto);
-        $resource = BookResource::make($service);
+        $resource = BookWithoutAuthorsResource::make($service);
 
         return $resource->response()->setStatusCode(201);
     }

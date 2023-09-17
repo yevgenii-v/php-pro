@@ -4,7 +4,6 @@ namespace App\Repositories\Books\Iterators;
 
 use App\Enums\Lang;
 use App\Repositories\Authors\Iterators\AuthorsIterator;
-use App\Repositories\Categories\Iterators\CategoryIterator;
 use App\Repositories\Categories\Iterators\CategoryWithoutBooksIterator;
 use Carbon\Carbon;
 
