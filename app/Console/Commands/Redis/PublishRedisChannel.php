@@ -2,7 +2,6 @@
 
 namespace App\Console\Commands\Redis;
 
-use App\Console\Commands\Redis\DTO\RedisDataDTO;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Redis;
 
@@ -28,7 +27,10 @@ class PublishRedisChannel extends Command
     public function handle(): void
     {
         while (true) {
-            Redis::publish('test-channel', json_encode(new RedisDataDTO(1, 'Jack West')));
+            Redis::publish('test-channel', json_encode([
+                'id' => 1,
+                'name' => 'Jack West'
+            ]));
             sleep(5);
         }
     }

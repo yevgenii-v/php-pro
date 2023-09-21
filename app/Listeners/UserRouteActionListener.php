@@ -3,8 +3,10 @@
 namespace App\Listeners;
 
 use App\Events\UserRouteActionEvent;
+use App\Services\RouteRedisService;
 use App\Services\RedisService;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Redis;
 
 class UserRouteActionListener
 {
@@ -12,7 +14,7 @@ class UserRouteActionListener
      * Create the event listener.
      */
     public function __construct(
-        protected RedisService $redisService
+        protected RouteRedisService $routeRedisService,
     ) {
     }
 
@@ -21,22 +23,25 @@ class UserRouteActionListener
      */
     public function handle(UserRouteActionEvent $event): void
     {
-        $singleRoute = $event->userRouteActionStoreDTO->getUserId() . '_' . $event->userRouteActionStoreDTO->getRoute();
-        $multiRoute = $event->userRouteActionStoreDTO->getUserId();
+        $singleRouteName = $this->routeRedisService->generateSingleRouteName($event);
+        $multiRouteName = $this->routeRedisService->generateMultiRouteName($event);
 
-        if ($this->redisService->get($singleRoute) === null) {
-            $this->redisService->set($singleRoute, 0, 60);
-            $this->redisService->set($multiRoute, 0, 60);
+        if ($this->routeRedisService->getRoute($singleRouteName) === null) {
+            $this->routeRedisService->createSingleRouteCounter($singleRouteName);
+            $this->routeRedisService->createMultiRouteCounter($multiRouteName);
         }
 
-        $incrSingleRoute = $this->redisService->incr($singleRoute);
-        $incrMultiRoute = $this->redisService->incr($multiRoute);
+        $incrSingleRoute = $this->routeRedisService->addIncr($singleRouteName);
+        $incrMultiRoute = $this->routeRedisService->addIncr($multiRouteName);
 
-        if ($incrSingleRoute > 10 && $incrSingleRoute < 30) {
+        if (
+            $incrSingleRoute > RouteRedisService::SINGLE_ROUTE_COUNT
+            && $incrSingleRoute <= RouteRedisService::MULTI_ROUTE_COUNT
+        ) {
             Log::info('Single route');
         }
 
-        if ($incrMultiRoute > 30) {
+        if ($incrMultiRoute > RouteRedisService::MULTI_ROUTE_COUNT) {
             Log::info('Multiple route');
         }
     }
