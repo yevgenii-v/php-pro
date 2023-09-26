@@ -2,41 +2,42 @@
 
 namespace App\Services\GetMyIp;
 
+use App\Services\Proxy\ProxiesStorage;
 use App\Services\Proxy\WebShareService;
 use GuzzleHttp\Client;
-use Illuminate\Support\Facades\Redis;
 
 class GetMyIpService
 {
+    private const MIN_EXECUTION_SECONDS = 1;
     public function __construct(
         protected Client $client,
         protected WebShareService $webShareService,
+        protected ProxiesStorage $proxiesStorage,
     ) {
     }
 
     public function handle(): string
     {
-        $countProxies = count(Redis::lrange('proxies', 0, 10));
+        $countProxies = count($this->proxiesStorage->lrange());
 
         if ($countProxies < 5) {
-            Redis::del('proxies');
+            $this->proxiesStorage->del();
             $this->webShareService->refreshProxyList();
         }
 
-        $proxy = json_decode(Redis::lpop('proxies'), true);
-        $userData = $proxy['username'] . ':' . $proxy['password'];
+        $proxyDTO = $this->proxiesStorage->lpop();
 
         $startTime = microtime(true);
 
         $response = $this->client->get(
             'https://api.myip.com/',
             [
-                'proxy' => 'http://' . $userData . '@' . $proxy['ip'] . ':' . $proxy['port'],
+                'proxy' => $proxyDTO->getData(),
             ]
         );
         $time = microtime(true) - $startTime;
-        if ($time < 1) {
-            Redis::rpush('proxies', json_encode($proxy));
+        if ($time < self::MIN_EXECUTION_SECONDS) {
+            $this->proxiesStorage->rpush($proxyDTO);
         }
 
         return $response->getBody()->getContents();

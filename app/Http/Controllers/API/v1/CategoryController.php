@@ -12,11 +12,11 @@ use App\Http\Resources\Category\CategoryResource;
 use App\Http\Resources\Category\CategoryWithoutBooksResource;
 use App\Repositories\Categories\CategoryStoreDTO;
 use App\Repositories\Categories\CategoryUpdateDTO;
-use App\Services\CategoryWithCacheService;
-use App\Services\CategoryService;
+use App\Services\Categories\CategoryService;
+use App\Services\Categories\CategoryWithCacheService;
+use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
-use Illuminate\Support\Collection;
 
 class CategoryController extends Controller
 {
@@ -72,6 +72,9 @@ class CategoryController extends Controller
         return $resource->response()->setStatusCode(200);
     }
 
+    /**
+     * @throws Exception
+     */
     public function showIterator(CategoryShowRequest $request): JsonResponse
     {
         $validatedData = $request->validated();

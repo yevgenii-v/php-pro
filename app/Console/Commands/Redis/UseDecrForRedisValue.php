@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Redis;
 
 class UseDecrForRedisValue extends Command
 {
+    private const DECR = 1;
     /**
      * The name and signature of the console command.
      *
@@ -29,7 +30,7 @@ class UseDecrForRedisValue extends Command
         $redis = Redis::get($this->argument('key'));
 
         if (ctype_digit($redis) === true) {
-            Redis::decr($this->argument('key'), 1);
+            Redis::decr($this->argument('key'), self::DECR);
             $this->info('Value was decreased successfully');
             return;
         }

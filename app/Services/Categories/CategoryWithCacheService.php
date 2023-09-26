@@ -1,18 +1,15 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Categories;
 
 use App\Repositories\Categories\CategoryRepository;
-use App\Services\Users\CacheService;
 use Illuminate\Support\Collection;
 
 class CategoryWithCacheService
 {
-    public const SECONDS = 20;
-
     public function __construct(
         protected CategoryRepository $categoryRepository,
-        protected CacheService $cacheService,
+        protected AllCategoriesStorage $allCategoriesStorage,
     ) {
     }
 
@@ -21,11 +18,11 @@ class CategoryWithCacheService
      */
     public function getCategories(): Collection
     {
-        $cachedData = $this->cacheService->get('categories');
+        $cachedData = $this->allCategoriesStorage->get();
 
         if ($cachedData === null) {
             $query = $this->categoryRepository->index();
-            $this->cacheService->set('categories', $query, self::SECONDS);
+            $this->allCategoriesStorage->set($query);
             return $query;
         }
 

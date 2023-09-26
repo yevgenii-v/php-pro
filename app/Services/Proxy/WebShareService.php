@@ -9,7 +9,8 @@ use Illuminate\Support\Facades\Redis;
 class WebShareService
 {
     public function __construct(
-        protected Client $client
+        protected Client $client,
+        protected ProxiesStorage $proxiesStorage,
     ) {
     }
 
@@ -40,7 +41,7 @@ class WebShareService
                 'ip'            => $result->proxy_address,
                 'port'          => $result->port,
             ];
-            Redis::lpush('proxies', json_encode($proxy));
+            $this->proxiesStorage->lpush(new ProxyDTO(...$proxy));
             $proxies[] = $proxy;
         }
 
@@ -68,7 +69,7 @@ class WebShareService
                 'port'          => $result->port,
             ];
 
-            Redis::rpush('proxies', json_encode($proxy));
+            $this->proxiesStorage->rpush(new ProxyDTO(...$proxy));
         }
     }
 }

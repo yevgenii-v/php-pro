@@ -3,15 +3,13 @@
 namespace Tests\Unit\Services;
 
 use App\Repositories\Categories\CategoryRepository;
-use App\Services\CategoryWithCacheService;
-use App\Services\Users\CacheService;
-use Illuminate\Support\Collection;
+use App\Services\Categories\AllCategoriesStorage;
+use App\Services\Categories\CategoryWithCacheService;
 use PHPUnit\Framework\TestCase;
 
 class CategoryWithCacheTest extends TestCase
 {
-    public const SECONDS = 20;
-    protected CacheService $cacheService;
+    protected AllCategoriesStorage $allCategoriesStorage;
     protected CategoryRepository $categoryRepository;
     protected CategoryWithCacheService $categoryService;
 
@@ -20,11 +18,11 @@ class CategoryWithCacheTest extends TestCase
         parent::setUp();
 
         $this->categoryRepository = $this->createMock(CategoryRepository::class);
-        $this->cacheService = $this->createMock(CacheService::class);
+        $this->allCategoriesStorage = $this->createMock(AllCategoriesStorage::class);
 
         $this->categoryService = new CategoryWithCacheService(
             $this->categoryRepository,
-            $this->cacheService,
+            $this->allCategoriesStorage,
         );
     }
 
@@ -35,7 +33,7 @@ class CategoryWithCacheTest extends TestCase
     {
         $cacheData = collect();
 
-        $this->cacheService
+        $this->allCategoriesStorage
             ->expects(self::once())
             ->method('get')
             ->willReturn($cacheData);
@@ -44,7 +42,7 @@ class CategoryWithCacheTest extends TestCase
             ->expects(self::never())
             ->method('index');
 
-        $this->cacheService
+        $this->allCategoriesStorage
             ->expects(self::never())
             ->method('set');
 
@@ -57,7 +55,7 @@ class CategoryWithCacheTest extends TestCase
     {
         $cacheData = null;
 
-        $this->cacheService
+        $this->allCategoriesStorage
             ->expects(self::once())
             ->method('get')
             ->willReturn($cacheData);
@@ -69,10 +67,10 @@ class CategoryWithCacheTest extends TestCase
             ->method('index')
             ->willReturn($dbData);
 
-        $this->cacheService
+        $this->allCategoriesStorage
             ->expects(self::once())
             ->method('set')
-            ->with('categories', $dbData, self::SECONDS);
+            ->with($dbData);
 
         $result = $this->categoryService->getCategories();
 

@@ -1,12 +1,11 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Categories;
 
 use App\Models\Category;
 use App\Repositories\Categories\CategoryRepository;
 use App\Repositories\Categories\CategoryStoreDTO;
 use App\Repositories\Categories\CategoryUpdateDTO;
-use App\Repositories\Categories\Iterators\CategoryIterator;
 use App\Repositories\Categories\Iterators\CategoryWithBooksIterator;
 use App\Repositories\Categories\Iterators\CategoryWithoutBooksIterator;
 use Illuminate\Support\Collection;
