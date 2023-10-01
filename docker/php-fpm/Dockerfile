@@ -52,8 +52,12 @@ RUN usermod -u ${USER_ID} -g ${GROUP_ID} www-data
 
 WORKDIR /var/www/html
 
+COPY ./docker/php-fpm/supervisord/supervisord.conf /etc/supervisord.conf
+
+RUN mkdir -p /var/run/supervisor
+
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer --version=${COMPOSER_VERSION}
 
 USER www-data
 
-CMD ["php-fpm"]
+CMD supervisord -c /etc/supervisord.conf -n

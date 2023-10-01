@@ -8,15 +8,20 @@
         "php": "^8.2",
         "ext-pdo": "*",
         "guzzlehttp/guzzle": "^7.8",
+        "http-interop/http-factory-guzzle": "^1.2.0",
         "laravel/framework": "^10.10",
         "laravel/passport": "^11.8",
         "laravel/sanctum": "^3.2",
         "laravel/tinker": "^2.8",
+        "php-http/message": "^1.16",
+        "php-http/message-factory": "^1.1",
         "liqpay/liqpay": "dev-master",
         "predis/predis": "^2.2",
         "srmklive/paypal": "~3.0",
         "stripe/stripe-php": "^10.20",
-        "yevgenii-v/ps-package": "^0.0.5"
+        "yevgenii-v/ps-package": "^0.0.5",
+        "supervisorphp/configuration": "^0.3.0",
+        "supervisorphp/supervisor": "^5.1"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API\v1;
 
+use App\Exceptions\CategoryNameExistsException;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Category\CategoryDestroyRequest;
 use App\Http\Requests\Category\CategoryShowRequest;
@@ -10,6 +11,7 @@ use App\Http\Requests\Category\CategoryUpdateRequest;
 use App\Http\Resources\Category\CategoryModelResource;
 use App\Http\Resources\Category\CategoryResource;
 use App\Http\Resources\Category\CategoryWithoutBooksResource;
+use App\Http\Resources\ErrorResource;
 use App\Repositories\Categories\CategoryStoreDTO;
 use App\Repositories\Categories\CategoryUpdateDTO;
 use App\Services\Categories\CategoryService;
@@ -17,6 +19,7 @@ use App\Services\Categories\CategoryWithCacheService;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Log;
 
 class CategoryController extends Controller
 {
@@ -51,13 +54,16 @@ class CategoryController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(CategoryStoreRequest $request): JsonResponse
+    public function store(CategoryStoreRequest $request): JsonResponse|ErrorResource
     {
         $dto = new CategoryStoreDTO(...$request->validated());
-        $service = $this->categoryService->store($dto);
-        $resource = CategoryResource::make($service);
-
-        return $resource->response()->setStatusCode(201);
+        try {
+            $service = $this->categoryService->store($dto);
+            $resource = CategoryWithoutBooksResource::make($service);
+            return $resource->response()->setStatusCode(201);
+        } catch (CategoryNameExistsException $e) {
+            return new ErrorResource($e);
+        }
     }
 
     /**

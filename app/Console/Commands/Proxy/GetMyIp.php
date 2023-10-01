@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Console\Commands;
+namespace App\Console\Commands\Proxy;
 
 use App\Services\GetMyIp\GetMyIpService;
 use Illuminate\Console\Command;
@@ -12,7 +12,7 @@ class GetMyIp extends Command
      *
      * @var string
      */
-    protected $signature = 'app:get-my-ip';
+    protected $signature = 'proxy:get-my-ip';
 
     /**
      * The console command description.

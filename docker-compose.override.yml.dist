@@ -11,6 +11,9 @@ services:
                 ENVIRONMENT: development
                 GROUP_ID: 1000
                 USER_ID: 1000
+        environment:
+            SUPERVISOR_USER: ${SUPERVISOR_USER}
+            SUPERVISOR_PASSWORD: ${SUPERVISOR_PASSWORD}
         ports:
             - "9005:9001"
 

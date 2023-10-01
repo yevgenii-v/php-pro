@@ -2,6 +2,7 @@
 
 namespace App\Services\Categories;
 
+use App\Exceptions\CategoryNameExistsException;
 use App\Models\Category;
 use App\Repositories\Categories\CategoryRepository;
 use App\Repositories\Categories\CategoryStoreDTO;
@@ -17,17 +18,33 @@ class CategoryService
     ) {
     }
 
+    /**
+     * @return Collection
+     */
     public function index(): Collection
     {
         return $this->categoryRepository->index();
     }
 
+    /**
+     * @throws CategoryNameExistsException
+     */
     public function store(CategoryStoreDTO $data): CategoryWithoutBooksIterator
     {
+        $isExistsByName = $this->categoryRepository->isExistsByName($data->getName());
+
+        if ($isExistsByName === true) {
+            return throw new CategoryNameExistsException('Category name exists already.', 400);
+        }
+
         $categoryId = $this->categoryRepository->store($data);
         return $this->categoryRepository->getById($categoryId);
     }
 
+    /**
+     * @param int $id
+     * @return CategoryWithoutBooksIterator
+     */
     public function show(int $id): CategoryWithoutBooksIterator
     {
         return $this->categoryRepository->getById($id);

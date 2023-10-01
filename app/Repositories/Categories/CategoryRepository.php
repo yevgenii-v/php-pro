@@ -15,7 +15,6 @@ use Illuminate\Support\Facades\DB;
 
 class CategoryRepository
 {
-
     protected Builder $categories;
 
     public function __construct()
@@ -23,6 +22,9 @@ class CategoryRepository
         $this->categories = DB::table('categories');
     }
 
+    /**
+     * @return Collection
+     */
     public function index(): Collection
     {
         $collection = $this->categories->get();
@@ -32,6 +34,10 @@ class CategoryRepository
         });
     }
 
+    /**
+     * @param CategoryStoreDTO $data
+     * @return int
+     */
     public function store(CategoryStoreDTO $data): int
     {
         return $this->categories->insertGetId([
@@ -41,6 +47,10 @@ class CategoryRepository
         ]);
     }
 
+    /**
+     * @param CategoryUpdateDTO $data
+     * @return bool
+     */
     public function update(CategoryUpdateDTO $data): bool
     {
         return $this->categories
@@ -51,11 +61,19 @@ class CategoryRepository
             ]);
     }
 
+    /**
+     * @param int $id
+     * @return void
+     */
     public function destroy(int $id): void
     {
         $this->categories->where('id', '=', $id)->delete();
     }
 
+    /**
+     * @param int $id
+     * @return CategoryWithoutBooksIterator
+     */
     public function getById(int $id): CategoryWithoutBooksIterator
     {
         $collection = $this->categories
@@ -65,6 +83,10 @@ class CategoryRepository
         return new CategoryWithoutBooksIterator($collection);
     }
 
+    /**
+     * @param int $id
+     * @return CategoryWithBooksIterator
+     */
     public function getByIdIterator(int $id): CategoryWithBooksIterator
     {
 
@@ -88,6 +110,10 @@ class CategoryRepository
         return new CategoryWithBooksIterator($result);
     }
 
+    /**
+     * @param int $id
+     * @return Category
+     */
     public function getByIdModel(int $id): Category
     {
         return Category::query()
@@ -96,5 +122,16 @@ class CategoryRepository
             })
             ->whereId($id)
             ->first();
+    }
+
+    /**
+     * @param string $name
+     * @return bool
+     */
+    public function isExistsByName(string $name): bool
+    {
+        return $this->categories
+            ->where('name', '=', $name)
+            ->exists();
     }
 }

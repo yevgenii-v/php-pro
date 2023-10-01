@@ -1,12 +1,10 @@
 <?php
 
-namespace App\Console\Commands;
+namespace App\Console\Commands\Proxy;
 
 use App\Services\Proxy\WebShareService;
-use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Redis;
 
 class Proxy extends Command
 {
@@ -15,7 +13,7 @@ class Proxy extends Command
      *
      * @var string
      */
-    protected $signature = 'app:get-proxy';
+    protected $signature = 'proxy:get';
 
     /**
      * The console command description.
