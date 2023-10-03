@@ -33,11 +33,14 @@ class CreateNewProcess extends Command
             $this->argument('number'),
         );
 
-        if ($supervisorService->hasSection($processDTO->getName()) === false) {
-            $supervisorService->addProcessConfig($processDTO);
-            $this->info('Created new process success');
-            exec('supervisorctl reread');
-            exec('supervisorctl update');
+        if ($supervisorService->hasSection($processDTO->getName()) === true) {
+            $this->info('Process exists already');
+            return;
         }
+
+        $supervisorService->addProcessConfig($processDTO);
+        $this->info('Created new process success');
+        exec('supervisorctl reread');
+        exec('supervisorctl update');
     }
 }
