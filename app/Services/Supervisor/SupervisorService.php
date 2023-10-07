@@ -140,6 +140,37 @@ class SupervisorService
     }
 
     /**
+     * @param ProcessDTO $DTO
+     * @return void
+     */
+    public function addProcesses(ProcessDTO $DTO): void
+    {
+        try {
+            $loader = $this->iniFileLoader->load();
+            if ($loader->hasSection(self::PREFIX . $DTO->getName() === true)) {
+                return;
+            }
+
+            $section = new Program(
+                $DTO->getName(), [
+                    'command' => $DTO->getCommand(),
+                    'process_name' => self::PROCESS_NAME_FORMULA,
+                    'autostart' => self::AUTO_START,
+                    'autorestart' => self::AUTO_RESTART,
+                    'user' => self::USER,
+                    'numprocs' => $DTO->getNumber(),
+                    'startretries' => self::START_RETRIES,
+                ]
+            );
+            $loader->addSection($section);
+            $this->iniFileWriter->write($loader);
+            $this->supervisor->reloadConfig();
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+        }
+    }
+
+    /**
      * @param string $name
      * @return void
      */
@@ -158,6 +189,10 @@ class SupervisorService
         }
     }
 
+    /**
+     * @param string $name
+     * @return bool
+     */
     public function hasSection(string $name): bool
     {
         return $this->iniFileLoader

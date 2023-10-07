@@ -37,7 +37,7 @@ class CategoryService
             return throw new CategoryNameExistsException('Category name exists already.', 400);
         }
 
-        $categoryId = $this->categoryRepository->store($data);
+        $categoryId = $this->categoryRepository->insertGetId($data);
         return $this->categoryRepository->getById($categoryId);
     }
 

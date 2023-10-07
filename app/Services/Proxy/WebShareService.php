@@ -72,4 +72,14 @@ class WebShareService
             $this->proxiesStorage->rpush(new ProxyDTO(...$proxy));
         }
     }
+
+    /**
+     * @throws GuzzleException
+     */
+    public function checkProxyList(): void
+    {
+        if ($this->proxiesStorage->llen() < 1) {
+            $this->getProxyList();
+        }
+    }
 }

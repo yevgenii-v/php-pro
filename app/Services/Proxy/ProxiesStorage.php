@@ -43,4 +43,9 @@ class ProxiesStorage
     {
         Redis::del(self::KEY);
     }
+
+    public function llen()
+    {
+        return Redis::llen(self::KEY);
+    }
 }

@@ -47,3 +47,6 @@ psql:
 
 redis:
 	@docker compose exec php_pro_redis /bin/bash
+
+remove-orphans:
+	@docker compose up -d --remove-orphans

@@ -7,21 +7,23 @@
     "require": {
         "php": "^8.2",
         "ext-pdo": "*",
+        "bschmitt/laravel-amqp": "^2.1",
         "guzzlehttp/guzzle": "^7.8",
         "http-interop/http-factory-guzzle": "^1.2.0",
         "laravel/framework": "^10.10",
         "laravel/passport": "^11.8",
         "laravel/sanctum": "^3.2",
         "laravel/tinker": "^2.8",
+        "liqpay/liqpay": "dev-master",
         "php-http/message": "^1.16",
         "php-http/message-factory": "^1.1",
-        "liqpay/liqpay": "dev-master",
         "predis/predis": "^2.2",
+        "squizlabs/php_codesniffer": "^3.7",
         "srmklive/paypal": "~3.0",
         "stripe/stripe-php": "^10.20",
-        "yevgenii-v/ps-package": "^0.0.5",
         "supervisorphp/configuration": "^0.3.0",
-        "supervisorphp/supervisor": "^5.1"
+        "supervisorphp/supervisor": "^5.1",
+        "yevgenii-v/ps-package": "^0.0.5"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",

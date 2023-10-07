@@ -4,10 +4,8 @@ namespace App\Repositories\Books;
 
 use App\Enums\Lang;
 use App\Models\Book;
-use App\Repositories\Books\Iterators\BookIterator;
 use App\Repositories\Books\Iterators\BooksIterator;
 use App\Repositories\Books\Iterators\BookWithoutAuthorsIterator;
-use App\Repositories\Categories\Iterators\CategoryIterator;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder;

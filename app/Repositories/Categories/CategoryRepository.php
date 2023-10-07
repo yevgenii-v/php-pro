@@ -3,11 +3,9 @@
 namespace App\Repositories\Categories;
 
 use App\Models\Category;
-use App\Repositories\Books\Iterators\BooksIterator;
-use App\Repositories\Books\Iterators\BooksWithoutJoinsIterator;
-use App\Repositories\Categories\Iterators\CategoryIterator;
 use App\Repositories\Categories\Iterators\CategoryWithBooksIterator;
 use App\Repositories\Categories\Iterators\CategoryWithoutBooksIterator;
+use App\Services\RabbitMQ\Messages\CategoryCreateMessageDTO;
 use Carbon\Carbon;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Collection;
@@ -35,15 +33,28 @@ class CategoryRepository
     }
 
     /**
-     * @param CategoryStoreDTO $data
+     * @param CategoryStoreDTO $DTO
      * @return int
      */
-    public function store(CategoryStoreDTO $data): int
+    public function insertGetId(CategoryStoreDTO $DTO): int
     {
         return $this->categories->insertGetId([
-            'name'          => $data->getName(),
+            'name'          => $DTO->getName(),
             'created_at'    => Carbon::now()->timezone('Europe/Kyiv'),
             'updated_at'    => Carbon::now()->timezone('Europe/Kyiv'),
+        ]);
+    }
+
+    /**
+     * @param CategoryCreateMessageDTO $DTO
+     * @return bool
+     */
+    public function insert(CategoryCreateMessageDTO $DTO): bool
+    {
+        return $this->categories->insert([
+            'name'          => $DTO->getName(),
+            'created_at'    => Carbon::createFromTimestamp($DTO->getCreatedAt()),
+            'updated_at'    => Carbon::createFromTimestamp($DTO->getUpdatedAt()),
         ]);
     }
 

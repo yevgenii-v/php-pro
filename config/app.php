@@ -170,6 +170,7 @@ return [
         App\Providers\RouteServiceProvider::class,
         App\Providers\StripeServiceProvider::class,
         App\Providers\LiqPayServiceProvider::class,
+        Bschmitt\Amqp\AmqpServiceProvider::class,
     ])->toArray(),
 
     /*
@@ -184,7 +185,7 @@ return [
     */
 
     'aliases' => Facade::defaultAliases()->merge([
-        // 'Example' => App\Facades\Example::class,
+        'Amqp' => Bschmitt\Amqp\Facades\Amqp::class,
     ])->toArray(),
 
 ];
