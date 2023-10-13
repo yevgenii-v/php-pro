@@ -36,7 +36,7 @@ class CategoryRepository
      * @param CategoryStoreDTO $DTO
      * @return int
      */
-    public function insertGetId(CategoryStoreDTO $DTO): int
+    public function insertAndGetId(CategoryStoreDTO $DTO): int
     {
         return $this->categories->insertGetId([
             'name'          => $DTO->getName(),

@@ -51,19 +51,12 @@ class RMQCounterService
 
     private function checkMessageCount(int $countMessage): bool
     {
-        if ($countMessage > $this->DTO->getMaxMessage()) {
-            return true;
-        }
-
-        return false;
+        return $countMessage > $this->DTO->getMaxMessage();
     }
 
     private function checkConsumerCount(int $countConsumer): bool
     {
-        if ($countConsumer < self::CONSUMER_COUNT) {
-            return true;
-        }
-        return false;
+        return $countConsumer < self::CONSUMER_COUNT;
     }
 
 

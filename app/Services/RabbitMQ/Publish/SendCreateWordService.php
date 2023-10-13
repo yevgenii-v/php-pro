@@ -26,10 +26,6 @@ class SendCreateWordService
     {
         $secondWork = time() - $startTime;
 
-        if ($secondWork < self::EXEC_TIME) {
-            return true;
-        }
-
-        return false;
+        return $secondWork < self::EXEC_TIME;
     }
 }
