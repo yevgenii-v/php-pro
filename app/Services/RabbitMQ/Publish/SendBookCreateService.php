@@ -4,6 +4,7 @@ namespace App\Services\RabbitMQ\Publish;
 
 use App\Services\RabbitMQ\Messages\BookCreateMessageDTO;
 use Bschmitt\Amqp\Facades\Amqp;
+use Carbon\Carbon;
 
 class SendBookCreateService
 {
@@ -22,6 +23,7 @@ class SendBookCreateService
                 'lang'          => $this->getRandLang($this->lang),
                 'pages'         => rand(15, 1000),
                 'categoryId'    => rand(1, 200),
+                'createdAt'     => Carbon::now(),
             ];
 
             $DTO = new BookCreateMessageDTO($data);

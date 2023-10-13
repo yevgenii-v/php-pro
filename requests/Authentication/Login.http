@@ -4,5 +4,5 @@ Accept: application/json
 
 {
     "email": "a@a.loc",
-    "password": "Tq32167501"
+    "password": "Secret123"
 }

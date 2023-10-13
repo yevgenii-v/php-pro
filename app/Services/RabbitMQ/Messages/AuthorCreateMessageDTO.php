@@ -4,7 +4,7 @@ namespace App\Services\RabbitMQ\Messages;
 
 use Carbon\Carbon;
 
-class CategoryCreateMessageDTO extends BaseMessage
+class AuthorCreateMessageDTO extends BaseMessage
 {
     protected string $name;
     protected Carbon $createdAt;

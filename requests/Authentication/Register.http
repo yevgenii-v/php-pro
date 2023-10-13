@@ -3,8 +3,8 @@ Content-Type: application/json
 Accept: application/json
 
 {
-    "name": "CreateNewUser",
-    "email": "newUser@example.loc",
-    "password": "S3cret",
-    "password_confirmation": "S3cret"
+    "name": "Yevgenii",
+    "email": "a@a.loc",
+    "password": "Secret123",
+    "password_confirmation": "Secret123"
 }

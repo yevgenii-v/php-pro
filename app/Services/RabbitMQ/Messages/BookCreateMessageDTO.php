@@ -3,35 +3,17 @@
 namespace App\Services\RabbitMQ\Messages;
 
 use App\Enums\Lang;
+use Carbon\Carbon;
 use JsonSerializable;
 
-class BookCreateMessageDTO implements JsonSerializable
+class BookCreateMessageDTO extends BaseMessage
 {
     protected string $name;
     protected int $year;
     protected Lang $lang;
     protected int $pages;
     protected int $categoryId;
-
-    public function __construct(object $data)
-    {
-        $this->name         = $data->name;
-        $this->year         = $data->year;
-        $this->lang         = Lang::from($data->lang);
-        $this->pages        = $data->pages;
-        $this->categoryId   = $data->categoryId;
-    }
-
-    public function jsonSerialize(): array
-    {
-        return [
-            'name'          => $this->name,
-            'year'          => $this->year,
-            'lang'          => $this->lang,
-            'pages'         => $this->pages,
-            'categoryId'    => $this->categoryId,
-        ];
-    }
+    protected Carbon $createdAt;
 
     /**
      * @return string
@@ -71,5 +53,13 @@ class BookCreateMessageDTO implements JsonSerializable
     public function getCategoryId(): int
     {
         return $this->categoryId;
+    }
+
+    /**
+     * @return Carbon
+     */
+    public function getCreatedAt(): Carbon
+    {
+        return $this->createdAt;
     }
 }
