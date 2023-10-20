@@ -15,7 +15,7 @@ use App\Http\Resources\Book\BookWithoutAuthorsResource;
 use App\Repositories\Books\BookIndexDTO;
 use App\Repositories\Books\BookStoreDTO;
 use App\Repositories\Books\BookUpdateDTO;
-use App\Services\BookService;
+use App\Services\Books\BookService;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;

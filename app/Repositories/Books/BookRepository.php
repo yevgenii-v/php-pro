@@ -185,4 +185,33 @@ class BookRepository
     {
         return $this->query->useIndex('books_year_lang_created_at_index');
     }
+
+    /**
+     * @param BookStatisticsCounterDTO $dto
+     * @return void
+     */
+    public function storeViewsPerHour(BookStatisticsCounterDTO $dto): void
+    {
+        DB::table('book_per_hour_statistics')
+            ->insert([
+                'book_id'       => $dto->getId(),
+                'book_views'    => $dto->getCount(),
+                'book_comments' => 0,
+                'created_at'    => Carbon::now(),
+            ]);
+    }
+
+    /**
+     * @param BookStatisticsCounterDTO $dto
+     * @return void
+     */
+    public function storeCommentsPerHour(BookStatisticsCounterDTO $dto): void
+    {
+        DB::table('book_per_hour_statistics')
+            ->where('book_id', '=', $dto->getId())
+            ->update([
+                'book_comments' => $dto->getCount(),
+                'updated_at' => Carbon::now(),
+            ]);
+    }
 }

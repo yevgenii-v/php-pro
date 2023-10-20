@@ -3,6 +3,7 @@
 namespace App\Console;
 
 use App\Console\Commands\Proxy\RefreshProxyList;
+use App\Console\Commands\UpdateBookStatistics;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -14,6 +15,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
 //         $schedule->command(RefreshProxyList::class)->everyThirtyMinutes();
+         $schedule->command(UpdateBookStatistics::class)->everyOddHour();
     }
 
     /**

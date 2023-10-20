@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Books;
 
 use App\Repositories\Books\BookIndexDTO;
 use App\Repositories\Books\BookRepository;
 use App\Repositories\Books\BookStoreDTO;
 use App\Repositories\Books\BookUpdateDTO;
-use App\Repositories\Books\Iterators\BookIterator;
 use App\Repositories\Books\Iterators\BooksIterator;
 use App\Repositories\Books\Iterators\BookWithoutAuthorsIterator;
+use App\Services\Books\Storages\BookViewsCounterStorage;
 use Illuminate\Support\Collection;
 
 class BookService

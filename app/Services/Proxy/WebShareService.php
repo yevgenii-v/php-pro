@@ -4,7 +4,6 @@ namespace App\Services\Proxy;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
-use Illuminate\Support\Facades\Redis;
 
 class WebShareService
 {
