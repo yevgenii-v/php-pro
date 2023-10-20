@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::group(['prefix' => 'v1'], function () {
-//    Route::group(['middleware' => ['auth:api', 'getUserAction']], function () {
+    Route::group(['middleware' => ['auth:api', 'getUserAction']], function () {
         Route::get('booksIterator', [BookController::class, 'getDataByIterator'])
             ->name('books.getDataByIterator');
         Route::get('booksModel', [BookController::class, 'getDataByModel'])
@@ -36,7 +36,7 @@ Route::group(['prefix' => 'v1'], function () {
 
         Route::get('/categoriesWithCache', [CategoryController::class, 'cachedIndex'])
             ->name('categories.cachedIndex');
-//    });
+    });
 
     Route::middleware(GuestMiddleware::class)->group(function () {
         Route::post('/login', [AuthenticationController::class, 'login'])->name('login');
