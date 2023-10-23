@@ -96,7 +96,7 @@ class BookController extends Controller
     {
         $dto = new BookUpdateDTO(...$request->validated());
         $service = $this->bookService->update($dto);
-        $resource = BookResource::make($service);
+        $resource = BookWithoutAuthorsResource::make($service);
 
         return $resource->response()->setStatusCode(200);
     }

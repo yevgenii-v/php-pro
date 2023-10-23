@@ -19,17 +19,14 @@ class BookIndexRequest extends FormRequest
     {
         return [
             'startDate' => [
-                'required',
                 'date',
-                'before:endDate',
+                'before_or_equal:endDate',
                 'after_or_equal: 1970-01-01',
-                'before_or_equal:' . Carbon::now()->format('Y-m-d')
                 ],
             'endDate'   => [
                 'required',
                 'date',
                 'after:startDate',
-                'after_or_equal: 1970-01-01',
                 'before_or_equal:' . Carbon::now()->format('Y-m-d')
             ],
             'year'      => [
@@ -50,8 +47,13 @@ class BookIndexRequest extends FormRequest
     {
         $validated = parent::validationData();
 
-        $validated['startDate'] = new Carbon($validated['startDate']);
-        $validated['endDate'] = new Carbon($validated['endDate']);
+        if (isset($validated['startDate'])) {
+            $validated['startDate'] = new Carbon($validated['startDate']);
+        }
+
+        if (isset($validated['endDate'])) {
+            $validated['endDate'] = new Carbon($validated['endDate']);
+        }
 
         if (isset($validated['lang'])) {
             $validated['lang'] = Lang::from($validated['lang']);

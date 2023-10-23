@@ -1,5 +1,6 @@
 FROM php:8.2.3-fpm-alpine3.17
 
+ARG ENVIRONMENT
 ARG GROUP_ID
 ARG USER_ID
 ARG COMPOSER_VERSION=2.3.10
@@ -34,6 +35,9 @@ RUN docker-php-ext-install pcntl
 RUN docker-php-ext-install zip
 RUN docker-php-ext-install bcmath
 
+RUN if [ "$ENVIRONMENT" = "development" ]; then \
+      pecl install xdebug && docker-php-ext-enable xdebug; \
+    fi
 
 RUN if ! getent group www-data >/dev/null; then \
       addgroup -g ${GROUP_ID} www-data; \

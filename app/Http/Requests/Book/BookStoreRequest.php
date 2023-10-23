@@ -18,7 +18,7 @@ class BookStoreRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'          => ['string', 'min:1', 'max:255', 'unique:books,name', 'required'],
+            'name'          => ['string', 'max:255', 'unique:books,name', 'required'],
             'year'          => ['integer', 'between:1970,' . Carbon::now()->format('Y'), 'required'],
             'lang'          => [Rule::enum(Lang::class), 'required'],
             'pages'         => ['integer', 'between:10, 55000', 'required'],

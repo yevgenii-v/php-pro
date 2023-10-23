@@ -168,22 +168,23 @@ class BookRepository
 
     public function useCreatedAtIndex(): Builder
     {
-        return $this->query->useIndex('books_created_at_index');
+        return $this->query->whereRaw("books.created_at IS NOT NULL");
     }
 
     public function useYearCreatedAtIndex(): Builder
     {
-        return $this->query->useIndex('books_year_created_at_index');
+        return $this->query->whereRaw("books.year IS NOT NULL AND books.created_at IS NOT NULL");
     }
 
     public function useLangCreatedAtIndex(): Builder
     {
-        return $this->query->useIndex('books_lang_created_at_index');
+        return $this->query->whereRaw("books.lang IS NOT NULL AND books.created_at IS NOT NULL");
     }
 
     public function useYearLangCreatedAtIndex(): Builder
     {
-        return $this->query->useIndex('books_year_lang_created_at_index');
+        return $this->query
+            ->whereRaw("books.year IS NOT NULL AND books.lang IS NOT NULL AND books.created_at IS NOT NULL");
     }
 
     /**

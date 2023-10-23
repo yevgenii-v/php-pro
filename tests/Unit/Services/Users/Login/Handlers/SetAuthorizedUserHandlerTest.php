@@ -13,7 +13,6 @@ use PHPUnit\Framework\TestCase;
 
 class SetAuthorizedUserHandlerTest extends TestCase
 {
-
     protected UserRepository $userRepository;
     protected UserAuthService $userAuthService;
     protected SetAuthorizedUserHandler $setAuthorizedUserHandler;
@@ -35,7 +34,7 @@ class SetAuthorizedUserHandlerTest extends TestCase
             $this->userAuthService,
         );
         $this->loginDTO = $this->createMock(LoginDTO::class);
-        $this->user = $this->createMock(UserIterator::class);
+        $this->userIterator = $this->createMock(UserIterator::class);
     }
 
     public function testValidData(): void
@@ -46,7 +45,7 @@ class SetAuthorizedUserHandlerTest extends TestCase
             ->expects(self::once())
             ->method('getUserById')
             ->with($userId)
-            ->willReturn($this->user);
+            ->willReturn($this->userIterator);
 
         $this->userAuthService
             ->expects(self::once())
@@ -56,7 +55,7 @@ class SetAuthorizedUserHandlerTest extends TestCase
         $this->loginDTO
             ->expects(self::once())
             ->method('setUser')
-            ->with($this->user);
+            ->with($this->userIterator);
 
         $result = $this->setAuthorizedUserHandler->handle($this->loginDTO, function ($loginDTO) {
             return $loginDTO;
