@@ -43,3 +43,8 @@ services:
             - rabbitmq_storage:/var/lib/rabbitmq/
         networks:
             - php_pro_networks
+
+    php_pro_swagger_ui:
+        image: swaggerapi/swagger-ui
+        networks:
+            - php_pro_networks

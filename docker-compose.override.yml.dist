@@ -45,6 +45,12 @@ services:
             - "15674:15672"
             - "5674:5672"
 
+    php_pro_swagger_ui:
+        ports:
+            - "8092:8080"
+        environment:
+            URL: http://192.168.56.56:86/api/swagger
+
 networks:
     php_pro_networks:
         external: true

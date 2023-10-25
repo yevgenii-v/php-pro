@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use OpenApi\Attributes as OA;
 
-class ErrorResource extends JsonResource
+class ValidationErrorsResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -15,11 +15,11 @@ class ErrorResource extends JsonResource
      * @return array<string, mixed>
      */
     #[OA\Schema(
-        schema: 'Errors',
-        description: 'The Errors',
+        schema: 'ValidationErrors',
+        description: 'Validation Errors',
         properties: [
+            new OA\Property(property: 'errors', description: "each key describes error message", type: 'object'),
             new OA\Property(property: 'message', type: 'string'),
-            new OA\Property(property: 'code', type: 'integer'),
         ]
     )]
     public function toArray(Request $request): array

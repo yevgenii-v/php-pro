@@ -19,7 +19,7 @@ use App\Services\Categories\CategoryWithCacheService;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Log;
+use OpenApi\Attributes as OA;
 
 class CategoryController extends Controller
 {
@@ -32,6 +32,18 @@ class CategoryController extends Controller
     /**
      * Display a listing of the resource.
      */
+    #[OA\Get(
+        path: '/v1/categories',
+        security: [['bearerAuth' => []]],
+        tags: ['categories'],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Show all categories',
+                content: new OA\JsonContent(ref: '#/components/schemas/Category')
+            ),
+        ],
+    )]
     public function index(): JsonResponse
     {
         $service = $this->categoryService->index();
@@ -43,6 +55,18 @@ class CategoryController extends Controller
     /**
      * @return JsonResponse
      */
+    #[OA\Get(
+        path: '/v1/categoriesWithCache',
+        security: [['bearerAuth' => []]],
+        tags: ['categories'],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Show all categories. Working with cache',
+                content: new OA\JsonContent(ref: '#/components/schemas/Category')
+            ),
+        ]
+    )]
     public function cachedIndex(): JsonResponse
     {
         $service = $this->categoryWithCacheService->getCategories();
@@ -54,6 +78,33 @@ class CategoryController extends Controller
     /**
      * Store a newly created resource in storage.
      */
+    #[OA\Post(
+        path: '/v1/categories',
+        security: [['bearerAuth' => []]],
+        tags: ['categories'],
+        parameters: [
+            new OA\Parameter(
+                name: 'name',
+                in: 'query',
+                required: true,
+                schema: new OA\Schema(
+                    type: 'string',
+                )
+            )
+        ],
+        responses: [
+            new OA\Response(
+                response: 201,
+                description: 'Show created category',
+                content: new OA\JsonContent(ref: '#/components/schemas/CategoryWithoutBooks')
+            ),
+            new OA\Response(
+                response: 422,
+                description: 'Validation errors',
+                content: new OA\JsonContent(ref: '#/components/schemas/Errors')
+            ),
+        ],
+    )]
     public function store(CategoryStoreRequest $request): JsonResponse|ErrorResource
     {
         $dto = new CategoryStoreDTO(...$request->validated());
@@ -69,6 +120,28 @@ class CategoryController extends Controller
     /**
      * Display the specified resource.
      */
+    #[OA\Get(
+        path: '/v1/categories/{id}',
+        security: [['bearerAuth' => []]],
+        tags: ['categories'],
+        parameters: [
+            new OA\Parameter(
+                name: 'id',
+                in: 'path',
+                required: true,
+                schema: new OA\Schema(
+                    type: 'integer',
+                )
+            )
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'show category',
+                content: new OA\JsonContent(ref: '#/components/schemas/Category')
+            ),
+        ],
+    )]
     public function show(CategoryShowRequest $request): JsonResponse
     {
         $validatedData = $request->validated();
@@ -81,6 +154,28 @@ class CategoryController extends Controller
     /**
      * @throws Exception
      */
+    #[OA\Get(
+        path: '/v1/categoryIterator/{id}',
+        security: [['bearerAuth' => []]],
+        tags: ['categories'],
+        parameters: [
+            new OA\Parameter(
+                name: 'id',
+                in: 'path',
+                required: true,
+                schema: new OA\Schema(
+                    type: 'integer',
+                )
+            )
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'show category',
+                content: new OA\JsonContent(ref: '#/components/schemas/Category')
+            ),
+        ],
+    )]
     public function showIterator(CategoryShowRequest $request): JsonResponse
     {
         $validatedData = $request->validated();
@@ -91,6 +186,28 @@ class CategoryController extends Controller
         return $resource->response()->setStatusCode(200);
     }
 
+    #[OA\Get(
+        path: '/v1/categoryModel/{id}',
+        security: [['bearerAuth' => []]],
+        tags: ['categories'],
+        parameters: [
+            new OA\Parameter(
+                name: 'id',
+                in: 'path',
+                required: true,
+                schema: new OA\Schema(
+                    type: 'integer',
+                )
+            )
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'show category',
+                content: new OA\JsonContent(ref: '#/components/schemas/CategoryModel')
+            ),
+        ],
+    )]
     public function showModel(CategoryShowRequest $request): JsonResponse
     {
         $validatedData = $request->validated();
@@ -104,11 +221,46 @@ class CategoryController extends Controller
     /**
      * Update the specified resource in storage.
      */
+    #[OA\Patch(
+        path: '/v1/categories/{id}',
+        security: [['bearerAuth' => []]],
+        tags: ['categories'],
+        parameters: [
+            new OA\Parameter(
+                name: 'id',
+                in: 'path',
+                required: true,
+                schema: new OA\Schema(
+                    type: 'integer',
+                )
+            ),
+            new OA\Parameter(
+                name: 'name',
+                in: 'query',
+                required: true,
+                schema: new OA\Schema(
+                    type: 'string',
+                )
+            ),
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'updates book',
+                content: new OA\JsonContent(ref: '#/components/schemas/BookWithoutAuthors')
+            ),
+            new OA\Response(
+                response: 422,
+                description: 'Validation errors',
+                content: new OA\JsonContent(ref: '#/components/schemas/ValidationErrors')
+            ),
+        ],
+    )]
     public function update(CategoryUpdateRequest $request): JsonResponse
     {
         $dto = new CategoryUpdateDTO(...$request->validated());
         $service = $this->categoryService->update($dto);
-        $resource = CategoryResource::make($service);
+        $resource = CategoryWithoutBooksResource::make($service);
 
         return $resource->response()->setStatusCode(200);
     }
@@ -116,6 +268,28 @@ class CategoryController extends Controller
     /**
      * Remove the specified resource from storage.
      */
+    #[OA\Delete(
+        path: '/v1/categories/{id}',
+        security: [['bearerAuth' => []]],
+        tags: ['categories'],
+        parameters: [
+            new OA\Parameter(
+                name: 'id',
+                in: 'path',
+                required: true,
+                schema: new OA\Schema(
+                    type: 'integer',
+                )
+            ),
+        ],
+        responses: [
+            new OA\Response(
+                response: 204,
+                description: 'delete a category',
+                content: null,
+            ),
+        ],
+    )]
     public function destroy(CategoryDestroyRequest $request): Response
     {
         $validatedData = $request->validated();

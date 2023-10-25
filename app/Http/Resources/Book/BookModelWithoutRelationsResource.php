@@ -5,7 +5,20 @@ namespace App\Http\Resources\Book;
 use App\Models\Book;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use OpenApi\Attributes as OA;
 
+/**
+ * @OA\Schema(
+ *     schema="BookModelWithoutRelations",
+ *     description="The Books",
+ *     @OA\Property(property="id", type="integer"),
+ *     @OA\Property(property="name", type="string"),
+ *     @OA\Property(property="year", type="integer"),
+ *     @OA\Property(property="lang", type="string"),
+ *     @OA\Property(property="pages", type="integer"),
+ *     @OA\Property(property="createdAt", type="string"),
+ * )
+ */
 class BookModelWithoutRelationsResource extends JsonResource
 {
     /**

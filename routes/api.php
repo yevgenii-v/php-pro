@@ -5,6 +5,7 @@ use App\Http\Controllers\API\v1\BookController;
 use App\Http\Controllers\API\v1\CategoryController;
 use App\Http\Controllers\API\v1\PaymentSystemController;
 use App\Http\Middleware\API\GuestMiddleware;
+use App\Services\SwaggerService\SwaggerService;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -17,6 +18,10 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
+
+Route::get('swagger', function () {
+    return response()->file(public_path() . SwaggerService::FILENAME);
+});
 
 Route::group(['prefix' => 'v1'], function () {
     Route::group(['middleware' => ['auth:api', 'getUserAction']], function () {

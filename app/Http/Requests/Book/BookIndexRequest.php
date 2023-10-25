@@ -39,7 +39,7 @@ class BookIndexRequest extends FormRequest
                 'sometimes',
                 Rule::enum(Lang::class)
             ],
-            'lastId' => ['sometimes', 'integer', 'min:1']
+            'lastId' => ['sometimes', 'integer', 'min:0']
         ];
     }
 

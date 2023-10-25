@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\API\v1;
 
+use App\Enums\Lang;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Book\BookDestroyRequest;
 use App\Http\Requests\Book\BookIndexIteratorRequest;
@@ -19,6 +20,7 @@ use App\Services\Books\BookService;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
+use OpenApi\Attributes as OA;
 
 class BookController extends Controller
 {
@@ -30,6 +32,67 @@ class BookController extends Controller
     /**
      * Display a listing of the resource.
      */
+    #[OA\Get(
+        path: '/v1/books',
+        security: [['bearerAuth' => []]],
+        tags: ['books'],
+        parameters: [
+            new OA\Parameter(
+                name: 'startDate',
+                in: 'query',
+                required: true,
+                schema: new OA\Schema(
+                    description: 'Min - 1970-01-01, max date is current year, month, day, but not after endDate',
+                    type: 'string',
+                )
+            ),
+            new OA\Parameter(
+                name: 'endDate',
+                in: 'query',
+                required: true,
+                schema: new OA\Schema(
+                    description: 'Minimum is startDate and maximum endDate',
+                    type: 'string',
+                )
+            ),
+            new OA\Parameter(
+                name: 'year',
+                in: 'query',
+                schema: new OA\Schema(
+                    description: 'Minimum - 1970, maximum - current year',
+                    type: 'integer',
+                    minimum: 1970
+                )
+            ),
+            new OA\Parameter(
+                name: 'lang',
+                in: 'query',
+                schema: new OA\Schema(
+                    type: 'string',
+                    enum: Lang::class
+                )
+            ),
+            new OA\Parameter(
+                name: 'lastId',
+                in: 'query',
+                schema: new OA\Schema(
+                    type: 'integer',
+                )
+            ),
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Show all books',
+                content: new OA\JsonContent(ref: '#/components/schemas/BookWithoutAuthors')
+            ),
+            new OA\Response(
+                response: 422,
+                description: 'Validation errors',
+                content: new OA\JsonContent(ref: '#/components/schemas/ValidationErrors')
+            ),
+        ],
+    )]
     public function index(BookIndexRequest $request): JsonResponse
     {
         $dto = new BookIndexDTO(...$request->validated());
@@ -45,6 +108,30 @@ class BookController extends Controller
     /**
      * @throws Exception
      */
+    #[OA\Get(
+        path: '/v1/booksIterator',
+        security: [['bearerAuth' => []]],
+        tags: ['books'],
+        parameters: [
+            new OA\Parameter(
+                name: 'lastId',
+                in: 'query',
+                required: true,
+            )
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Show all books',
+                content: new OA\JsonContent(ref: '#/components/schemas/Book')
+            ),
+            new OA\Response(
+                response: 422,
+                description: 'Validation errors',
+                content: new OA\JsonContent(ref: '#/components/schemas/ValidationErrors')
+            ),
+        ],
+    )]
     public function getDataByIterator(BookIndexIteratorRequest $request): JsonResponse
     {
         $validatedData = $request->validated();
@@ -55,6 +142,30 @@ class BookController extends Controller
         return $resource->response()->setStatusCode(200);
     }
 
+    #[OA\Get(
+        path: '/v1/booksModel',
+        security: [['bearerAuth' => []]],
+        tags: ['books'],
+        parameters: [
+            new OA\Parameter(
+                name: 'lastId',
+                in: 'query',
+                required: true,
+            )
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'Show all books',
+                content: new OA\JsonContent(ref: '#/components/schemas/Book')
+            ),
+            new OA\Response(
+                response: 422,
+                description: 'Validation errors',
+                content: new OA\JsonContent(ref: '#/components/schemas/ValidationErrors')
+            ),
+        ],
+    )]
     public function getDataByModel(BookIndexIteratorRequest $request): JsonResponse
     {
         $validatedData = $request->validated();
@@ -68,6 +179,71 @@ class BookController extends Controller
     /**
      * Store a newly created resource in storage.
      */
+    #[OA\Post(
+        path: '/v1/books',
+        security: [['bearerAuth' => []]],
+        tags: ['books'],
+        parameters: [
+            new OA\Parameter(
+                name: 'name',
+                in: 'query',
+                required: true,
+                schema: new OA\Schema(
+                    description: 'maximum symbols - 255',
+                    type: 'string',
+                    maxLength: 255,
+                )
+            ),
+            new OA\Parameter(
+                name: 'year',
+                in: 'query',
+                required: true,
+                schema: new OA\Schema(
+                    description: 'minimum - 1970, max value is actual year',
+                    type: 'integer',
+                    minimum: 1970,
+                )
+            ),
+            new OA\Parameter(
+                name: 'lang',
+                in: 'query',
+                required: true,
+                schema: new OA\Schema(
+                    enum: Lang::class,
+                )
+            ),
+            new OA\Parameter(
+                name: 'pages',
+                in: 'query',
+                required: true,
+                schema: new OA\Schema(
+                    type: 'integer',
+                    maximum: 55000,
+                    minimum: 10,
+                )
+            ),
+            new OA\Parameter(
+                name: 'categoryId',
+                in: 'query',
+                required: true,
+                schema: new OA\Schema(
+                    type: 'integer',
+                )
+            ),
+        ],
+        responses: [
+            new OA\Response(
+                response: 201,
+                description: 'show created book',
+                content: new OA\JsonContent(ref: '#/components/schemas/Book')
+            ),
+            new OA\Response(
+                response: 422,
+                description: 'Validation errors',
+                content: new OA\JsonContent(ref: '#/components/schemas/ValidationErrors')
+            ),
+        ],
+    )]
     public function store(BookStoreRequest $request): JsonResponse
     {
         $dto = new BookStoreDTO(...$request->validated());
@@ -80,6 +256,28 @@ class BookController extends Controller
     /**
      * Display the specified resource.
      */
+    #[OA\Get(
+        path: '/v1/books/{id}',
+        security: [['bearerAuth' => []]],
+        tags: ['books'],
+        parameters: [
+            new OA\Parameter(
+                name: 'id',
+                in: 'path',
+                required: true,
+                schema: new OA\Schema(
+                    type: 'integer',
+                )
+            )
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'show book',
+                content: new OA\JsonContent(ref: '#/components/schemas/Book')
+            ),
+        ],
+    )]
     public function show(BookShowRequest $request): JsonResponse
     {
         $validatedData = $request->validated();
@@ -92,6 +290,82 @@ class BookController extends Controller
     /**
      * Update the specified resource in storage.
      */
+    #[OA\Patch(
+        path: '/v1/books/{id}',
+        security: [['bearerAuth' => []]],
+        tags: ['books'],
+        parameters: [
+            new OA\Parameter(
+                name: 'id',
+                in: 'path',
+                required: true,
+                schema: new OA\Schema(
+                    type: 'integer',
+                )
+            ),
+            new OA\Parameter(
+                name: 'name',
+                in: 'query',
+                required: true,
+                schema: new OA\Schema(
+                    description: 'Should be unique',
+                    type: 'string',
+                    maxLength: 255,
+                    minLength: 1,
+                )
+            ),
+            new OA\Parameter(
+                name: 'year',
+                in: 'query',
+                required: true,
+                schema: new OA\Schema(
+                    description: 'max value actual year',
+                    type: 'integer',
+                    minimum: 1970,
+                )
+            ),
+            new OA\Parameter(
+                name: 'lang',
+                in: 'query',
+                required: true,
+                schema: new OA\Schema(
+                    type: 'string',
+                    enum: Lang::class,
+                )
+            ),
+            new OA\Parameter(
+                name: 'pages',
+                in: 'query',
+                required: true,
+                schema: new OA\Schema(
+                    type: 'integer',
+                    maximum: 55000,
+                    minimum: 10,
+                )
+            ),
+            new OA\Parameter(
+                name: 'categoryId',
+                in: 'query',
+                required: true,
+                schema: new OA\Schema(
+                    description: 'only exists categories',
+                    type: 'integer',
+                )
+            ),
+        ],
+        responses: [
+            new OA\Response(
+                response: 200,
+                description: 'updates book',
+                content: new OA\JsonContent(ref: '#/components/schemas/BookWithoutAuthors')
+            ),
+            new OA\Response(
+                response: 422,
+                description: 'Validation errors',
+                content: new OA\JsonContent(ref: '#/components/schemas/ValidationErrors')
+            ),
+        ],
+    )]
     public function update(BookUpdateRequest $request): JsonResponse
     {
         $dto = new BookUpdateDTO(...$request->validated());
@@ -104,6 +378,28 @@ class BookController extends Controller
     /**
      * Remove the specified resource from storage.
      */
+    #[OA\Delete(
+        path: '/v1/books/{id}',
+        security: [['bearerAuth' => []]],
+        tags: ['books'],
+        parameters: [
+            new OA\Parameter(
+                name: 'id',
+                in: 'path',
+                required: true,
+                schema: new OA\Schema(
+                    type: 'integer',
+                )
+            ),
+        ],
+        responses: [
+            new OA\Response(
+                response: 204,
+                description: 'delete a book',
+                content: null,
+            ),
+        ],
+    )]
     public function destroy(BookDestroyRequest $request): Response
     {
         $validatedData = $request->validated();

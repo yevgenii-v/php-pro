@@ -23,7 +23,8 @@
         "stripe/stripe-php": "^10.20",
         "supervisorphp/configuration": "^0.3.0",
         "supervisorphp/supervisor": "^5.1",
-        "yevgenii-v/ps-package": "^0.0.5"
+        "yevgenii-v/ps-package": "^0.0.5",
+        "zircote/swagger-php": "^4.7"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",

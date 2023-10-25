@@ -5,7 +5,16 @@ namespace App\Http\Resources\Category;
 use App\Repositories\Categories\Iterators\CategoryWithoutBooksIterator;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use OpenApi\Attributes as OA;
 
+/**
+ * @OA\Schema(
+ *     schema="CategoryWithoutBooks",
+ *     description="The Category",
+ *     @OA\Property(property="id", type="integer"),
+ *     @OA\Property(property="name", type="string"),
+ * )
+ */
 class CategoryWithoutBooksResource extends JsonResource
 {
     /**

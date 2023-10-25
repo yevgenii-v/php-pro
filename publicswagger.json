@@ -1,0 +1,927 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "My first API",
+        "version": "0.1"
+    },
+    "servers": [
+        {
+            "url": "http://php-pro.loc/api/"
+        }
+    ],
+    "paths": {
+        "/v1/books": {
+            "get": {
+                "tags": [
+                    "books"
+                ],
+                "summary": "Display a listing of the resource.",
+                "operationId": "8bf45c9f1bdc66000343740d96322695",
+                "parameters": [
+                    {
+                        "name": "startDate",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "description": "Min - 1970-01-01, max date is current year, month, day, but not after endDate",
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "endDate",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "description": "Minimum is startDate and maximum endDate",
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "year",
+                        "in": "query",
+                        "schema": {
+                            "description": "Minimum - 1970, maximum - current year",
+                            "type": "integer",
+                            "minimum": 1970
+                        }
+                    },
+                    {
+                        "name": "lang",
+                        "in": "query",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "ua",
+                                "pl",
+                                "de"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "lastId",
+                        "in": "query",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Show all books",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BookWithoutAuthors"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation errors",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ValidationErrors"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "books"
+                ],
+                "summary": "Store a newly created resource in storage.",
+                "operationId": "f1924732abbc9590a6e122637e474ada",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "description": "maximum symbols - 255",
+                            "type": "string",
+                            "maxLength": 255
+                        }
+                    },
+                    {
+                        "name": "year",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "description": "minimum - 1970, max value is actual year",
+                            "type": "integer",
+                            "minimum": 1970
+                        }
+                    },
+                    {
+                        "name": "lang",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "enum": [
+                                "en",
+                                "ua",
+                                "pl",
+                                "de"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "pages",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "maximum": 55000,
+                            "minimum": 10
+                        }
+                    },
+                    {
+                        "name": "categoryId",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "show created book",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Book"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation errors",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ValidationErrors"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/v1/booksIterator": {
+            "get": {
+                "tags": [
+                    "books"
+                ],
+                "operationId": "62e9eba28c46e63a970526810eaf9cdc",
+                "parameters": [
+                    {
+                        "name": "lastId",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Show all books",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Book"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation errors",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ValidationErrors"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/v1/booksModel": {
+            "get": {
+                "tags": [
+                    "books"
+                ],
+                "operationId": "80b4d680640301ce7805fcad9b88f323",
+                "parameters": [
+                    {
+                        "name": "lastId",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Show all books",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Book"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation errors",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ValidationErrors"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/v1/books/{id}": {
+            "get": {
+                "tags": [
+                    "books"
+                ],
+                "summary": "Display the specified resource.",
+                "operationId": "17058f13a507023d6f6a2d74f94a5503",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "show book",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Book"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "books"
+                ],
+                "summary": "Remove the specified resource from storage.",
+                "operationId": "4c8c13be1db9d4d2d4218918d388eeb0",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "delete a book"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "patch": {
+                "tags": [
+                    "books"
+                ],
+                "summary": "Update the specified resource in storage.",
+                "operationId": "bbdbda101a5d2702b9341568c8918a19",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "description": "Should be unique",
+                            "type": "string",
+                            "maxLength": 255,
+                            "minLength": 1
+                        }
+                    },
+                    {
+                        "name": "year",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "description": "max value actual year",
+                            "type": "integer",
+                            "minimum": 1970
+                        }
+                    },
+                    {
+                        "name": "lang",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "en",
+                                "ua",
+                                "pl",
+                                "de"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "pages",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "maximum": 55000,
+                            "minimum": 10
+                        }
+                    },
+                    {
+                        "name": "categoryId",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "description": "only exists categories",
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "updates book",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BookWithoutAuthors"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation errors",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ValidationErrors"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/v1/categories": {
+            "get": {
+                "tags": [
+                    "categories"
+                ],
+                "summary": "Display a listing of the resource.",
+                "operationId": "3d190aaade29ca48850ff94906fbe993",
+                "responses": {
+                    "200": {
+                        "description": "Show all categories",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Category"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "categories"
+                ],
+                "summary": "Store a newly created resource in storage.",
+                "operationId": "cdd26d4dae52d69c323d0bd9aef306f4",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Show created category",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CategoryWithoutBooks"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation errors",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Errors"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/v1/categoriesWithCache": {
+            "get": {
+                "tags": [
+                    "categories"
+                ],
+                "operationId": "87f3ec01793b05a6f9b3470348eeb3e1",
+                "responses": {
+                    "200": {
+                        "description": "Show all categories. Working with cache",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Category"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/v1/categories/{id}": {
+            "get": {
+                "tags": [
+                    "categories"
+                ],
+                "summary": "Display the specified resource.",
+                "operationId": "43c43b9e8a98e44e47bc3a69187a0be3",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "show category",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Category"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "categories"
+                ],
+                "summary": "Remove the specified resource from storage.",
+                "operationId": "b772580f3f01b050716163ac12252560",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "delete a category"
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            },
+            "patch": {
+                "tags": [
+                    "categories"
+                ],
+                "summary": "Update the specified resource in storage.",
+                "operationId": "52dd7c2734947363ccd487ac84f8584e",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "name",
+                        "in": "query",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "updates book",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/BookWithoutAuthors"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation errors",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ValidationErrors"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/v1/categoryIterator/{id}": {
+            "get": {
+                "tags": [
+                    "categories"
+                ],
+                "operationId": "f256a1f84135755aa726bdb36faed6ee",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "show category",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Category"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        },
+        "/v1/categoryModel/{id}": {
+            "get": {
+                "tags": [
+                    "categories"
+                ],
+                "operationId": "8cfe28cb056c3830fbd632f7fb85fa70",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "show category",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CategoryModel"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "bearerAuth": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Authors": {
+                "description": "The Authors, WARNING: Many-to-many relation",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "BookForCategory": {
+                "description": "The Books",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "year": {
+                        "type": "integer"
+                    },
+                    "lang": {
+                        "type": "string",
+                        "enum": [
+                            "en",
+                            "ua",
+                            "pl",
+                            "de"
+                        ]
+                    },
+                    "pages": {
+                        "type": "integer"
+                    },
+                    "createdAt": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "BookModelWithoutRelations": {
+                "description": "The Books",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "year": {
+                        "type": "integer"
+                    },
+                    "lang": {
+                        "type": "string"
+                    },
+                    "pages": {
+                        "type": "integer"
+                    },
+                    "createdAt": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "Book": {
+                "description": "The Book",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "year": {
+                        "type": "integer"
+                    },
+                    "category": {
+                        "$ref": "#/components/schemas/Category"
+                    },
+                    "authors": {
+                        "$ref": "#/components/schemas/Authors"
+                    },
+                    "lang": {
+                        "type": "string",
+                        "enum": [
+                            "en",
+                            "ua",
+                            "pl",
+                            "de"
+                        ]
+                    },
+                    "pages": {
+                        "type": "integer"
+                    },
+                    "createdAt": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "BookWithoutAuthors": {
+                "description": "The Book",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "year": {
+                        "type": "integer"
+                    },
+                    "category": {
+                        "$ref": "#/components/schemas/CategoryWithoutBooks"
+                    },
+                    "lang": {
+                        "type": "string",
+                        "enum": [
+                            "en",
+                            "ua",
+                            "pl",
+                            "de"
+                        ]
+                    },
+                    "pages": {
+                        "type": "integer"
+                    },
+                    "createdAt": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "CategoryModel": {
+                "description": "The Category",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "books": {
+                        "$ref": "#/components/schemas/BookModelWithoutRelations"
+                    }
+                },
+                "type": "object"
+            },
+            "Category": {
+                "description": "The Category",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": "string"
+                    },
+                    "bookForCategory": {
+                        "$ref": "#/components/schemas/BookForCategory"
+                    }
+                },
+                "type": "object"
+            },
+            "CategoryWithoutBooks": {
+                "description": "The Category",
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "name": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            },
+            "Errors": {
+                "description": "The Errors",
+                "properties": {
+                    "message": {
+                        "description": "Transform the resource into an array.",
+                        "type": "string"
+                    },
+                    "code": {
+                        "type": "integer"
+                    }
+                },
+                "type": "object"
+            },
+            "ValidationErrors": {
+                "description": "Validation Errors",
+                "properties": {
+                    "errors": {
+                        "description": "each key describes error message",
+                        "type": "object"
+                    },
+                    "message": {
+                        "type": "string"
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "securitySchemes": {
+            "bearerAuth": {
+                "type": "http",
+                "name": "bearerAuth",
+                "in": "header",
+                "bearerFormat": "JWT",
+                "scheme": "bearer"
+            }
+        }
+    }
+}

@@ -7,7 +7,20 @@ use App\Repositories\Categories\Iterators\CategoryIterator;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use OpenApi\Attributes as OA;
 
+#[OA\Schema(
+    schema: 'Category',
+    description: 'The Category',
+    properties: [
+        new OA\Property(property: 'id', type: 'integer'),
+        new OA\Property(property: 'name', type: 'string'),
+        new OA\Property(
+            property: 'bookForCategory',
+            ref: '#/components/schemas/BookForCategory'
+        ),
+    ]
+)]
 class CategoryResource extends JsonResource
 {
     /**

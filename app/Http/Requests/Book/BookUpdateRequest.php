@@ -20,7 +20,7 @@ class BookUpdateRequest extends FormRequest
     {
         return [
             'id'            => ['integer', 'exists:books,id'],
-            'name'          => ['string', 'min:1', 'max:255', 'unique:books,name,' . $this->id],
+            'name'          => ['string', 'min:2', 'max:255', 'unique:books,name,' . $this->id],
             'year'          => ['integer', 'min:1970', 'max:' . Carbon::now()->format('Y')],
             'lang'          => [Rule::enum(Lang::class)],
             'pages'         => ['integer', 'min:10', 'max:55000'],
