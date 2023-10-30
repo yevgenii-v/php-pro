@@ -15,6 +15,7 @@ class BookWithoutAuthorsIterator
     protected Lang $lang;
     protected int $pages;
     protected Carbon $createdAt;
+    protected Carbon $updatedAt;
 
     /**
      * @param object $data
@@ -28,6 +29,7 @@ class BookWithoutAuthorsIterator
         $this->lang = Lang::from($data->lang);
         $this->pages = $data->pages;
         $this->createdAt = new Carbon($data->created_at);
+        $this->updatedAt = new Carbon($data->updated_at);
     }
 
     /**
@@ -84,5 +86,13 @@ class BookWithoutAuthorsIterator
     public function getCreatedAt(): Carbon
     {
         return $this->createdAt;
+    }
+
+    /**
+     * @return Carbon
+     */
+    public function getUpdatedAt(): Carbon
+    {
+        return $this->updatedAt;
     }
 }

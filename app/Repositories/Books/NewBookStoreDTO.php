@@ -1,29 +1,22 @@
 <?php
 
-namespace App\Repositories\Books\Iterators;
+namespace App\Repositories\Books;
 
 use App\Enums\Lang;
 use Carbon\Carbon;
 
-class BookWithoutJoinsIterator
+class NewBookStoreDTO
 {
-    protected int $id;
-    protected string $name;
-    protected int $year;
-    protected Lang $lang;
-    protected int $pages;
-    protected Carbon $createdAt;
-    protected Carbon $updatedAt;
-
-    public function __construct(object $data)
-    {
-        $this->id = $data->id;
-        $this->name = $data->name;
-        $this->year = $data->year;
-        $this->lang = Lang::from($data->lang);
-        $this->pages = $data->pages;
-        $this->createdAt = new Carbon($data->created_at);
-        $this->updatedAt = new Carbon($data->updatedAt);
+    public function __construct(
+        protected int $id,
+        protected string $name,
+        protected int $year,
+        protected Lang $lang,
+        protected int $pages,
+        protected int $categoryId,
+        protected Carbon $createdAt,
+        protected Carbon $updatedAt,
+    ) {
     }
 
     /**
@@ -64,6 +57,14 @@ class BookWithoutJoinsIterator
     public function getPages(): int
     {
         return $this->pages;
+    }
+
+    /**
+     * @return int
+     */
+    public function getCategoryId(): int
+    {
+        return $this->categoryId;
     }
 
     /**
