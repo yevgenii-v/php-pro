@@ -5,7 +5,10 @@ namespace App\Repositories\Books;
 use App\Enums\Lang;
 use App\Models\Book;
 use App\Repositories\Books\Iterators\BooksIterator;
+use App\Repositories\Books\Iterators\BooksWithoutAuthorsIterator;
+use App\Repositories\Books\Iterators\BooksWithoutJoinsIterator;
 use App\Repositories\Books\Iterators\BookWithoutAuthorsIterator;
+use App\Repositories\Books\Iterators\BookWithoutJoinsIterator;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Builder;
@@ -39,6 +42,27 @@ class BookRepository
             ->where('books.id', '>', $data->getLastId());
 
         return $this->query;
+    }
+
+    public function getData(int $lastId = 0): BooksWithoutAuthorsIterator
+    {
+        $bookQuery = $this->query->select([
+            'books.id',
+            'books.name',
+            'year',
+            'lang',
+            'books.pages',
+            'books.created_at',
+            'category_id',
+            'categories.name as category_name',
+        ])
+            ->join('categories', 'categories.id', '=', 'books.category_id')
+            ->orderBy('books.id')
+            ->limit(5)
+            ->where('books.id', '>', $lastId)
+            ->get();
+
+        return new BooksWithoutAuthorsIterator($bookQuery);
     }
 
     public function store(BookStoreDTO $data): int
@@ -78,7 +102,38 @@ class BookRepository
         $this->query->where('id', '=', $id)->delete();
     }
 
-    public function getById(int $id): BookWithoutAuthorsIterator
+    public function getByIdWithCatName(int $id): BookWithoutAuthorsIterator
+    {
+        $bookQuery = $this->query
+            ->select([
+                'books.id',
+                'books.name',
+                'year',
+                'lang',
+                'books.pages',
+                'books.created_at',
+                'categories.id as category_id',
+                'categories.name as category_name'
+            ])
+            ->where('books.id', '=', $id)
+            ->join('categories', 'categories.id', '=', 'books.category_id')
+            ->first();
+
+        return new BookWithoutAuthorsIterator((object)[
+            'id'            => $bookQuery->book_id,
+            'name'          => $bookQuery->name,
+            'year'          => $bookQuery->year,
+            'category'      => (object)[
+                'id'        => $bookQuery->category_id,
+                'name'      => $bookQuery->category_name,
+            ],
+            'lang'          => $bookQuery->lang,
+            'pages'         => $bookQuery->pages,
+            'created_at'    => $bookQuery->created_at,
+        ]);
+    }
+
+    public function getByIdNoCatName(int $id): BookWithoutJoinsIterator
     {
         $bookQuery = $this->query
             ->select([
@@ -89,20 +144,15 @@ class BookRepository
                 'books.pages',
                 'books.created_at',
                 'category_id',
-                'categories.name as category_name'
             ])
-            ->join('categories', 'categories.id', '=', 'books.category_id')
-            ->where('books.id', '=', $id)
+            ->where('id', '=', $id)
             ->first();
 
-        return new BookWithoutAuthorsIterator((object)[
+        return new BookWithoutJoinsIterator((object)[
             'id'            => $bookQuery->id,
             'name'          => $bookQuery->name,
             'year'          => $bookQuery->year,
-            'category'      => (object)[
-                'id'        => $bookQuery->category_id,
-                'name'      => $bookQuery->category_name,
-            ],
+            'category_id'   => $bookQuery->category_id,
             'lang'          => $bookQuery->lang,
             'pages'         => $bookQuery->pages,
             'created_at'    => $bookQuery->created_at,
@@ -130,7 +180,6 @@ class BookRepository
             ->join('authors', 'author_book.author_id', '=', 'authors.id')
             ->orderBy('books.id')
             ->where('books.id', '>', $lastId)
-            ->limit(2000)
             ->get();
 
         return new BooksIterator($result);
@@ -214,5 +263,10 @@ class BookRepository
                 'book_comments' => $dto->getCount(),
                 'updated_at' => Carbon::now(),
             ]);
+    }
+
+    public function existsById(int $id): bool
+    {
+        return $this->query->where('id', '=', $id)->exists();
     }
 }

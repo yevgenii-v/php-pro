@@ -135,6 +135,13 @@ class CategoryRepository
             ->first();
     }
 
+    public function isExistsById(int $id): bool
+    {
+        return $this->categories
+            ->where('id', '=', $id)
+            ->exists();
+    }
+
     /**
      * @param string $name
      * @return bool
