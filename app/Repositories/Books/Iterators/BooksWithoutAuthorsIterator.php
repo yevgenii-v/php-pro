@@ -26,6 +26,7 @@ class BooksWithoutAuthorsIterator implements IteratorAggregate
                     'lang'          => $item->lang,
                     'pages'         => $item->pages,
                     'created_at'    => $item->created_at,
+                    'updated_at'    => $item->updated_at,
                 ]
             );
         }
@@ -51,7 +52,8 @@ class BooksWithoutAuthorsIterator implements IteratorAggregate
             'category'      => new CategoryWithoutBooksIterator($book->getCategory()),
             'lang'          => $book->getLang(),
             'pages'         => $book->getPages(),
-            'createdAt'    => $book->getCreatedAt(),
+            'createdAt'     => $book->getCreatedAt(),
+            'updated_at'    => $book->getUpdatedAt(),
         ], $this->data);
     }
 }

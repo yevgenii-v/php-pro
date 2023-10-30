@@ -44,7 +44,7 @@ class BookRepository
         return $this->query;
     }
 
-    public function getData(int $lastId = 0): BooksWithoutAuthorsIterator
+    public function getData(int $lastId = 0, int $limit = 5): BooksWithoutAuthorsIterator
     {
         $bookQuery = $this->query->select([
             'books.id',
@@ -53,12 +53,13 @@ class BookRepository
             'lang',
             'books.pages',
             'books.created_at',
+            'books.updated_at',
             'category_id',
             'categories.name as category_name',
         ])
             ->join('categories', 'categories.id', '=', 'books.category_id')
             ->orderBy('books.id')
-            ->limit(5)
+            ->limit($limit)
             ->where('books.id', '>', $lastId)
             ->get();
 
@@ -143,6 +144,7 @@ class BookRepository
                 'lang',
                 'books.pages',
                 'books.created_at',
+                'books.updated_at',
                 'category_id',
             ])
             ->where('id', '=', $id)
@@ -156,6 +158,7 @@ class BookRepository
             'lang'          => $bookQuery->lang,
             'pages'         => $bookQuery->pages,
             'created_at'    => $bookQuery->created_at,
+            'updated_at'    => $bookQuery->updated_at,
         ]);
     }
 
@@ -268,5 +271,20 @@ class BookRepository
     public function existsById(int $id): bool
     {
         return $this->query->where('id', '=', $id)->exists();
+    }
+
+    public function storeIntoNewBooks(NewBookStoreDTO $DTO): void
+    {
+        DB::table('new_books')
+            ->insert([
+                'id'            => $DTO->getId(),
+                'name'          => $DTO->getName(),
+                'year'          => $DTO->getYear(),
+                'lang'          => $DTO->getLang(),
+                'pages'         => $DTO->getPages(),
+                'category_id'   => $DTO->getCategoryId(),
+                'created_at'    => $DTO->getCreatedAt(),
+                'updated_at'    => $DTO->getUpdatedAt(),
+            ]);
     }
 }

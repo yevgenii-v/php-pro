@@ -43,6 +43,7 @@ class BookWithoutAuthorsResource extends JsonResource
             'lang'      => $resource->getLang(),
             'pages'     => $resource->getPages(),
             'createdAt' => $resource->getCreatedAt(),
+            'updatedAt' => $resource->getUpdatedAt(),
         ];
     }
 }
