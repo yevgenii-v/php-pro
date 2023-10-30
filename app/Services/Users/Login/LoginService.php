@@ -11,7 +11,6 @@ use Illuminate\Pipeline\Pipeline;
 
 class LoginService
 {
-
     protected const HANDLERS = [
         CheckValidDataHandler::class,
         SetAuthorizedUserHandler::class,

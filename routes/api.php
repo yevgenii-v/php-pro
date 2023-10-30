@@ -3,7 +3,9 @@
 use App\Http\Controllers\API\v1\AuthenticationController;
 use App\Http\Controllers\API\v1\BookController;
 use App\Http\Controllers\API\v1\CategoryController;
+use App\Http\Controllers\API\v1\FileDownloadController;
 use App\Http\Controllers\API\v1\PaymentSystemController;
+use App\Http\Controllers\API\v1\TelegramController;
 use App\Http\Middleware\API\GuestMiddleware;
 use App\Services\SwaggerService\SwaggerService;
 use Illuminate\Support\Facades\Route;
@@ -24,6 +26,8 @@ Route::get('swagger', function () {
 });
 
 Route::group(['prefix' => 'v1'], function () {
+    Route::post('/telegram', [TelegramController::class, 'index'])->name('telegram.index');
+    Route::get('download/{file}', [FileDownloadController::class, 'index'])->name('books.download');
     Route::group(['middleware' => ['auth:api', 'getUserAction']], function () {
         Route::get('booksIterator', [BookController::class, 'getDataByIterator'])
             ->name('books.getDataByIterator');

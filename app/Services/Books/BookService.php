@@ -73,18 +73,18 @@ class BookService
     public function store(BookStoreDTO $data): BookWithoutAuthorsIterator
     {
         $bookId = $this->bookRepository->store($data);
-        return $this->bookRepository->getById($bookId);
+        return $this->bookRepository->getByIdWithCatName($bookId);
     }
 
     public function show(int $id): BookWithoutAuthorsIterator
     {
-        return $this->bookRepository->getById($id);
+        return $this->bookRepository->getByIdWithCatName($id);
     }
 
     public function update(BookUpdateDTO $data): BookWithoutAuthorsIterator
     {
         $this->bookRepository->update($data);
-        return $this->bookRepository->getById($data->getId());
+        return $this->bookRepository->getByIdWithCatName($data->getId());
     }
 
     public function destroy(int $id): void
